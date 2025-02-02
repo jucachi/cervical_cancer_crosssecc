@@ -48,6 +48,30 @@ data_factors <- read_delim(here("data", "data_factors.csv"),
 ## Setting theme
 
 ```{r}
+# ##my_gtsummary_theme <-
+#   list(
+#     "pkgwide-fn:pvalue_fun" = function(x)
+#       style_pvalue(x, digits = 2),
+#     "pkgwide-fn:prependpvalue_fun" = function(x)
+#       style_pvalue(x, digits = 2, prepend_p = TRUE),
+#     "tbl_summary-str:continuous_stat" = "{median} ({p25}, {p75})",
+#     "tbl_summary-str:categorical_stat" = "{n} ({p}%)",
+#     "tbl_summary-fn:percent_fun" = function(x)
+#       style_number(x, digits = 1, scale = 100),
+#     "tbl_summary-arg:missing" = "no"
+#   )
+# 
+# # Set a gtsummary theme
+# #set_gtsummary_theme(my_gtsummary_theme, theme_gtsummary_compact())
+# #set_gtsummary_theme(
+#   theme_gtsummary_compact(), my_gtsummary_theme
+# )
+# #reset_gtsummary_theme()
+# #theme_gtsummary_compact()
+# #theme_gtsummary_journal(journal = "jama")##
+
+# Set a gtsummary language
+#theme_gtsummary_language(language = "es")
 my_gtsummary_theme <-
   list(
     "pkgwide-fn:pvalue_fun" = function(x)
@@ -64,180 +88,338 @@ my_gtsummary_theme <-
 # Set a gtsummary theme
 #set_gtsummary_theme(my_gtsummary_theme, theme_gtsummary_compact())
 set_gtsummary_theme(
-  theme_gtsummary_compact(), my_gtsummary_theme
-)
-reset_gtsummary_theme()
-theme_gtsummary_compact()
-theme_gtsummary_journal(journal = "jama")
-
+theme_gtsummary_compact(), my_gtsummary_theme
+ )
 # Set a gtsummary language
-theme_gtsummary_language(language = "es")
+theme_gtsummary_language(language = "en")
 ```
 
 ## Setting up variables
 
 ```{r}
+# data_factors_1 <-
+#   data_factors |>
+#   mutate(
+#     edad = ff_label(edad, "Edad (años)"),
+#     edad.c = case_when(edad < 38 ~ "< 38", edad >= 38 &
+#                          edad <= 50 ~ "38-50", edad > 50 ~ "> 50") |>
+#       fct_relevel("< 38", "38-50", "> 50") |>
+#       ff_label("Edad (años)"),
+#     
+#     e_marital = factor(e_marital) |> ###
+#       fct_recode(
+#         "Casada" = "casada",
+#         "Conviviente" = "conviviente",
+#         "Soltera" = "soltera",
+#         "Viuda" = "viuda"
+#       ) |>
+#       fct_relevel("Casada", "Conviviente", "Soltera", "Viuda") |>
+#       ff_label("Estado marital"),
+#     
+#     n_educacion = factor(n_educacion) |> ###
+#       fct_recode(
+#         "Primaria" = "primaria",
+#         "Secundaria" = "secundaria",
+#         "Superior" = "superior"
+#       ) |>
+#       fct_relevel("Primaria", "Secundaria", "Superior") |>
+#       ff_label("Nivel de educación"),
+#     
+#     religion = factor(religion) |> ###
+#       fct_recode(
+#         "Ninguna" = "ninguna",
+#         "Catolico" = "catolico",
+#         "Evangelista" = "evangelista"
+#       ) |>
+#       fct_relevel("Ninguna", "Catolico", "Evangelista") |>
+#       ff_label("Religión"),
+#     
+#     etnia = factor(etnia) |> ###
+#       fct_recode(
+#         "Mestizo" = "mestizo",
+#         "Blanco" = "blanco",
+#         "Otro" = "otro"
+#       ) |>
+#       fct_relevel("Mestizo", "Blanco", "Otro") |>
+#       ff_label("Etnia"),
+#     
+#     procedencia = factor(procedencia) |> ###
+#       fct_recode("Urbano" = "urbano", "Rural" = "rural") |>
+#       fct_relevel("Urbano", "Rural") |>
+#       ff_label("Procedencia"),
+#     
+#     ocupacion = factor(ocupacion) |> ###
+#       fct_recode(
+#         "Estudiante" = "estudiante",
+#         "Empleada" = "empleada",
+#         "Ama de casa" = "ama de casa",
+#         "Otro" = "otro",
+#         "Sin empleo" = "sin empleo"
+#       ) |>
+#       fct_relevel("Estudiante", "Empleada", "Ama de casa", "Otro", "Sin empleo") |>
+#       ff_label("Ocupación"),
+#     
+#     ocupacion_convi = factor(ocupacion_convi) |> ###
+#       fct_recode(
+#         "Estudiante" = "estudiante",
+#         "Empleado" = "empleado",
+#         "Otro" = "otro",
+#         "Sin empleo" = "sin empleo"
+#       ) |>
+#       fct_relevel("Estudiante", "Empleado", "Otro", "Sin empleo") |>
+#       ff_label("Ocupación de conviviente"),
+#     
+#     antec_fam = factor(antec_fam) |> ###
+#       fct_recode("Si" = "si", "No" = "no") |>
+#       fct_relevel("Si", "No") |>
+#       ff_label("Antecedente familiar"),
+#     
+#     edad_relacion_sexual.c = case_when(
+#       edad_relacion_sexual >= 22 ~ "22 a más",
+#       edad_relacion_sexual >= 19 &
+#         edad_relacion_sexual <= 21 ~ "19-21",
+#       edad_relacion_sexual <= 18  ~ "18 a menos"
+#     )    |>
+#       fct_relevel("22 a más", "19-21", "18 a menos") |>
+#       ff_label("Edad de inicio de relaciones sexuales"),
+#     
+#     parejas_sex.c = case_when(
+#       parejas_sex <= 1 ~ "0 o 1",
+#       parejas_sex == 2 ~ "2",
+#       parejas_sex == 3 ~ "3",
+#       parejas_sex >= 4 ~ "4 a más"
+#     )    |>
+#       fct_relevel("0 o 1", "2", "3", "4 a más") |>
+#       ff_label("Parejas sexuales"),
+#     
+#     num_hijos.c = case_when(
+#       num_hijos == 0 ~ "0",
+#       num_hijos >= 1 & num_hijos <= 2 ~ "1 a 2",
+#       num_hijos >= 3 ~ "3 a más"
+#     )    |>
+#       fct_relevel("0", "1 a 2", "3 a más") |>
+#       ff_label("Número de hijos"),
+#     
+#     num_partos.c = case_when(
+#       num_partos >= 3 ~ "3 a más",
+#       num_partos == 2 ~ "2",
+#       num_partos == 1 ~ "1",
+#       num_partos == 0 ~ "0"
+#     )    |>
+#       fct_relevel("3 a más", "2", "1" , "0") |>
+#       ff_label("Número de partos"),
+#     
+#     met_anticoncep = factor(met_anticoncep) |> ###
+#       fct_recode(
+#         "No usa" = "no uso",
+#         "ACO" = "aco",
+#         "Ampolla trimestral" = "ampolla de 3 meses",
+#         "Inyeccion mensual" = "ampolla mes",
+#         "DIU" = "diu",
+#         "Implante subdermico" = "implante_sd"
+#       )  |>
+#       fct_relevel(
+#         "No usa",
+#         "ACO",
+#         "Ampolla trimestral",
+#         "Inyeccion mensual",
+#         "DIU",
+#         "Implante subdermico"
+#       ) |>
+#       ff_label("Metodo anticonceptivo"),
+#     
+#     antec_ets = factor(antec_ets) |> ###
+#       fct_recode("Si" = "si", "No" = "no") |>
+#       fct_relevel("Si", "No") |>
+#       ff_label("Antecedente de ITS"),
+#     
+#     conocimiento = case_when(
+#       conocimiento == "no conoce" |
+#         conocimiento == "bajo" ~ "Bajo/no conoce",
+#       conocimiento == "medio" ~ "Medio" ,
+#       TRUE ~ "Alto"
+#     ) |>
+#       fct_relevel("Bajo/no conoce", "Medio", "Alto") |>
+#       ff_label("Nivel de conocimiento"),
+#     
+#     conocimiento_dico = case_when(
+#       conocimiento == "Bajo/no conoce" |
+#         conocimiento == "medio" ~ "Medio a No conoce",
+#       TRUE ~ "Alto"
+#     ) |>
+#       fct_relevel("Medio a No conoce", "Alto") |>
+#       ff_label("Nivel de conocimiento"),
+#     
+#     
+#     actitud = case_when(actitud == "negativa" ~ "Negativa", TRUE ~ "Positiva") |>
+#       fct_relevel("Negativa", "Positiva") |>
+#       ff_label("Actitud"),
+#     
+#     practica = case_when(practica == "incorrecta" ~ "Incorrecta", TRUE ~ "Correcta") |>
+#       fct_relevel("Incorrecta", "Correcta") |>
+#       ff_label("Prácticas")
+#   )
+
 data_factors_1 <-
   data_factors |>
   mutate(
-    edad = ff_label(edad, "Edad (años)"),
+    edad = ff_label(edad, "Age (years)"),
     edad.c = case_when(edad < 38 ~ "< 38", edad >= 38 &
                          edad <= 50 ~ "38-50", edad > 50 ~ "> 50") |>
       fct_relevel("< 38", "38-50", "> 50") |>
-      ff_label("Edad (años)"),
+      ff_label("Age (years)"),
     
     e_marital = factor(e_marital) |> ###
       fct_recode(
-        "Casada" = "casada",
-        "Conviviente" = "conviviente",
-        "Soltera" = "soltera",
-        "Viuda" = "viuda"
+        "Married" = "casada",
+        "Cohabiting" = "conviviente",
+        "Single" = "soltera",
+        "Widowed" = "viuda"
       ) |>
-      fct_relevel("Casada", "Conviviente", "Soltera", "Viuda") |>
-      ff_label("Estado marital"),
+      fct_relevel("Married", "Cohabiting", "Single", "Widowed") |>
+      ff_label("Marital status"),
     
     n_educacion = factor(n_educacion) |> ###
       fct_recode(
-        "Primaria" = "primaria",
-        "Secundaria" = "secundaria",
-        "Superior" = "superior"
+        "Primary" = "primaria",
+        "Secondary" = "secundaria",
+        "Higher" = "superior"
       ) |>
-      fct_relevel("Primaria", "Secundaria", "Superior") |>
-      ff_label("Nivel de educación"),
+      fct_relevel("Primary", "Secondary", "Higher") |>
+      ff_label("Education level"),
     
     religion = factor(religion) |> ###
       fct_recode(
-        "Ninguna" = "ninguna",
-        "Catolico" = "catolico",
-        "Evangelista" = "evangelista"
+        "None" = "ninguna",
+        "Catholic" = "catolico",
+        "Evangelical" = "evangelista"
       ) |>
-      fct_relevel("Ninguna", "Catolico", "Evangelista") |>
-      ff_label("Religión"),
+      fct_relevel("None", "Catholic", "Evangelical") |>
+      ff_label("Religion"),
     
     etnia = factor(etnia) |> ###
       fct_recode(
         "Mestizo" = "mestizo",
-        "Blanco" = "blanco",
-        "Otro" = "otro"
+        "White" = "blanco",
+        "Other" = "otro"
       ) |>
-      fct_relevel("Mestizo", "Blanco", "Otro") |>
-      ff_label("Etnia"),
+      fct_relevel("Mestizo", "White", "Other") |>
+      ff_label("Ethnicity"),
     
     procedencia = factor(procedencia) |> ###
-      fct_recode("Urbano" = "urbano", "Rural" = "rural") |>
-      fct_relevel("Urbano", "Rural") |>
-      ff_label("Procedencia"),
+      fct_recode("Urban" = "urbano", "Rural" = "rural") |>
+      fct_relevel("Urban", "Rural") |>
+      ff_label("Origin"),
     
     ocupacion = factor(ocupacion) |> ###
       fct_recode(
-        "Estudiante" = "estudiante",
-        "Empleada" = "empleada",
-        "Ama de casa" = "ama de casa",
-        "Otro" = "otro",
-        "Sin empleo" = "sin empleo"
+        "Student" = "estudiante",
+        "Employed" = "empleada",
+        "Homemaker" = "ama de casa",
+        "Other" = "otro",
+        "Unemployed" = "sin empleo"
       ) |>
-      fct_relevel("Estudiante", "Empleada", "Ama de casa", "Otro", "Sin empleo") |>
-      ff_label("Ocupación"),
+      fct_relevel("Student", "Employed", "Homemaker", "Other", "Unemployed") |>
+      ff_label("Occupation"),
     
     ocupacion_convi = factor(ocupacion_convi) |> ###
       fct_recode(
-        "Estudiante" = "estudiante",
-        "Empleado" = "empleado",
-        "Otro" = "otro",
-        "Sin empleo" = "sin empleo"
+        "Student" = "estudiante",
+        "Employed" = "empleado",
+        "Other" = "otro",
+        "Unemployed" = "sin empleo"
       ) |>
-      fct_relevel("Estudiante", "Empleado", "Otro", "Sin empleo") |>
-      ff_label("Ocupación de conviviente"),
+      fct_relevel("Student", "Employed", "Other", "Unemployed") |>
+      ff_label("Partner's occupation"),
     
     antec_fam = factor(antec_fam) |> ###
-      fct_recode("Si" = "si", "No" = "no") |>
-      fct_relevel("Si", "No") |>
-      ff_label("Antecedente familiar"),
+      fct_recode("Yes" = "si", "No" = "no") |>
+      fct_relevel("Yes", "No") |>
+      ff_label("Family history"),
     
     edad_relacion_sexual.c = case_when(
-      edad_relacion_sexual >= 22 ~ "22 a más",
+      edad_relacion_sexual >= 22 ~ "22 or older",
       edad_relacion_sexual >= 19 &
         edad_relacion_sexual <= 21 ~ "19-21",
-      edad_relacion_sexual <= 18  ~ "18 a menos"
+      edad_relacion_sexual <= 18  ~ "18 or younger"
     )    |>
-      fct_relevel("22 a más", "19-21", "18 a menos") |>
-      ff_label("Edad de inicio de relaciones sexuales"),
+      fct_relevel("22 or older", "19-21", "18 or younger") |>
+      ff_label("Age at first sexual intercourse"),
     
     parejas_sex.c = case_when(
-      parejas_sex <= 1 ~ "0 o 1",
+      parejas_sex <= 1 ~ "0 or 1",
       parejas_sex == 2 ~ "2",
       parejas_sex == 3 ~ "3",
-      parejas_sex >= 4 ~ "4 a más"
+      parejas_sex >= 4 ~ "4 or more"
     )    |>
-      fct_relevel("0 o 1", "2", "3", "4 a más") |>
-      ff_label("Parejas sexuales"),
+      fct_relevel("0 or 1", "2", "3", "4 or more") |>
+      ff_label("Number of sexual partners"),
     
     num_hijos.c = case_when(
       num_hijos == 0 ~ "0",
-      num_hijos >= 1 & num_hijos <= 2 ~ "1 a 2",
-      num_hijos >= 3 ~ "3 a más"
+      num_hijos >= 1 & num_hijos <= 2 ~ "1 to 2",
+      num_hijos >= 3 ~ "3 or more"
     )    |>
-      fct_relevel("0", "1 a 2", "3 a más") |>
-      ff_label("Número de hijos"),
+      fct_relevel("0", "1 to 2", "3 or more") |>
+      ff_label("Number of children"),
     
     num_partos.c = case_when(
-      num_partos >= 3 ~ "3 a más",
+      num_partos >= 3 ~ "3 or more",
       num_partos == 2 ~ "2",
       num_partos == 1 ~ "1",
       num_partos == 0 ~ "0"
     )    |>
-      fct_relevel("3 a más", "2", "1" , "0") |>
-      ff_label("Número de partos"),
+      fct_relevel("3 or more", "2", "1" , "0") |>
+      ff_label("Number of deliveries"),
     
     met_anticoncep = factor(met_anticoncep) |> ###
       fct_recode(
-        "No usa" = "no uso",
-        "ACO" = "aco",
-        "Ampolla trimestral" = "ampolla de 3 meses",
-        "Inyeccion mensual" = "ampolla mes",
-        "DIU" = "diu",
-        "Implante subdermico" = "implante_sd"
+        "Not using" = "no uso",
+        "Oral contraceptives" = "aco",
+        "Quarterly injection" = "ampolla de 3 meses",
+        "Monthly injection" = "ampolla mes",
+        "IUD" = "diu",
+        "Subdermal implant" = "implante_sd"
       )  |>
       fct_relevel(
-        "No usa",
-        "ACO",
-        "Ampolla trimestral",
-        "Inyeccion mensual",
-        "DIU",
-        "Implante subdermico"
+        "Not using",
+        "Oral contraceptives",
+        "Quarterly injection",
+        "Monthly injection",
+        "IUD",
+        "Subdermal implant"
       ) |>
-      ff_label("Metodo anticonceptivo"),
+      ff_label("Contraceptive method"),
     
     antec_ets = factor(antec_ets) |> ###
-      fct_recode("Si" = "si", "No" = "no") |>
-      fct_relevel("Si", "No") |>
-      ff_label("Antecedente de ITS"),
+      fct_recode("Yes" = "si", "No" = "no") |>
+      fct_relevel("Yes", "No") |>
+      ff_label("History of STIs"),
     
     conocimiento = case_when(
       conocimiento == "no conoce" |
-        conocimiento == "bajo" ~ "Bajo/no conoce",
-      conocimiento == "medio" ~ "Medio" ,
-      TRUE ~ "Alto"
+        conocimiento == "bajo" ~ "Low/No knowledge",
+      conocimiento == "medio" ~ "Medium" ,
+      TRUE ~ "High"
     ) |>
-      fct_relevel("Bajo/no conoce", "Medio", "Alto") |>
-      ff_label("Nivel de conocimiento"),
+      fct_relevel("Low/No knowledge", "Medium", "High") |>
+      ff_label("Knowledge level"),
     
     conocimiento_dico = case_when(
-      conocimiento == "Bajo/no conoce" |
-        conocimiento == "medio" ~ "Medio a No conoce",
-      TRUE ~ "Alto"
+      conocimiento == "Low/No knowledge" |
+        conocimiento == "medio" ~ "Medium to No knowledge",
+      TRUE ~ "High"
     ) |>
-      fct_relevel("Medio a No conoce", "Alto") |>
-      ff_label("Nivel de conocimiento"),
+      fct_relevel("Medium to No knowledge", "High") |>
+      ff_label("Knowledge level"),
     
+    actitud = case_when(actitud == "negativa" ~ "Negative", TRUE ~ "Positive") |>
+      fct_relevel("Negative", "Positive") |>
+      ff_label("Attitude"),
     
-    actitud = case_when(actitud == "negativa" ~ "Negativa", TRUE ~ "Positiva") |>
-      fct_relevel("Negativa", "Positiva") |>
-      ff_label("Actitud"),
-    
-    practica = case_when(practica == "incorrecta" ~ "Incorrecta", TRUE ~ "Correcta") |>
-      fct_relevel("Incorrecta", "Correcta") |>
-      ff_label("Prácticas")
+    practica = case_when(practica == "incorrecta" ~ "Incorrect", TRUE ~ "Correct") |>
+      fct_relevel("Incorrect", "Correct") |>
+      ff_label("Practices")
   )
 ```
 
