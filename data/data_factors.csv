@@ -1,0 +1,219 @@
+﻿paciente_num;edad;e_marital;n_educacion;religion;etnia;procedencia;ocupacion;ocupacion_convi;antec_fam;edad_relacion_sexual;parejas_sex;num_hijos;num_partos;met_anticoncep;antec_ets;conocimiento;actitud;practica
+1;53;casada;superior;catolico;mestizo;urbano;otro;empleado;no;23;2;3;0;no uso;no;alto;negativa;incorrecta
+2;54;casada;superior;catolico;mestizo;rural;empleada;empleado;no;18;1;3;3;no uso;no;medio;positiva;incorrecta
+3;26;soltera;superior;catolico;blanco;urbano;estudiante;estudiante;no;18;4;2;2;no uso;no;medio;positiva;incorrecta
+4;25;soltera;superior;ninguna;mestizo;rural;sin empleo;sin empleo;no;18;10;0;0;no uso;si;medio;positiva;correcta
+5;25;soltera;superior;ninguna;mestizo;rural;estudiante;estudiante;no;18;6;0;0;no uso;no;medio;positiva;correcta
+6;38;soltera;superior;catolico;mestizo;rural;ama de casa;otro;no;20;2;2;0;no uso;no;alto;negativa;correcta
+7;29;soltera;secundaria;catolico;otro;urbano;estudiante;otro;no;16;3;2;0;ampolla de 3 meses;no;alto;positiva;incorrecta
+8;39;conviviente;superior;catolico;mestizo;urbano;otro;otro;si;17;4;4;1;diu;no;bajo;negativa;incorrecta
+9;50;soltera;superior;catolico;mestizo;urbano;empleada;otro;si;19;3;2;0;no uso;no;alto;positiva;correcta
+10;25;conviviente;superior;catolico;mestizo;urbano;estudiante;otro;no;17;2;2;0;ampolla de 3 meses;no;medio;positiva;incorrecta
+11;26;conviviente;secundaria;catolico;blanco;rural;ama de casa;empleado;no;17;5;1;0;no uso;si;no conoce;negativa;incorrecta
+12;28;soltera;superior;catolico;mestizo;urbano;estudiante;otro;no;26;1;0;0;no uso;no;bajo;negativa;incorrecta
+13;25;soltera;superior;catolico;otro;urbano;otro;otro;no;20;2;0;0;no uso;no;bajo;positiva;incorrecta
+14;27;soltera;secundaria;catolico;mestizo;rural;estudiante;estudiante;no;15;2;0;0;no uso;no;bajo;positiva;incorrecta
+15;28;conviviente;secundaria;ninguna;blanco;rural;ama de casa;empleado;si;17;2;4;4;implante_sd;no;alto;negativa;correcta
+16;32;soltera;superior;catolico;otro;urbano;otro;otro;no;18;5;1;1;diu;no;medio;positiva;correcta
+17;53;casada;secundaria;catolico;mestizo;rural;ama de casa;otro;no;19;1;1;0;no uso;no;medio;negativa;correcta
+18;27;soltera;superior;catolico;mestizo;rural;empleada;empleado;si;20;1;1;1;no uso;no;medio;positiva;incorrecta
+19;25;soltera;superior;ninguna;mestizo;urbano;estudiante;otro;no;18;2;0;0;no uso;no;bajo;positiva;incorrecta
+20;32;soltera;secundaria;catolico;mestizo;rural;ama de casa;empleado;no;30;1;0;0;no uso;no;bajo;negativa;incorrecta
+21;31;conviviente;superior;catolico;mestizo;urbano;otro;otro;no;18;2;2;2;aco;no;medio;positiva;incorrecta
+22;54;casada;superior;catolico;mestizo;rural;otro;otro;no;25;1;2;1;no uso;no;medio;positiva;correcta
+23;32;soltera;superior;catolico;blanco;urbano;estudiante;empleado;no;20;3;1;0;no uso;no;alto;positiva;correcta
+24;27;conviviente;superior;evangelista;mestizo;rural;empleada;empleado;si;19;8;0;0;no uso;si;medio;positiva;incorrecta
+25;35;soltera;superior;catolico;mestizo;rural;ama de casa;empleado;no;17;3;1;1;no uso;no;bajo;positiva;incorrecta
+26;26;soltera;superior;catolico;mestizo;urbano;estudiante;empleado;no;16;10;2;0;no uso;no;medio;negativa;incorrecta
+27;26;soltera;secundaria;catolico;blanco;rural;estudiante;estudiante;no;18;2;0;0;aco;no;no conoce;positiva;incorrecta
+28;25;soltera;secundaria;evangelista;mestizo;rural;estudiante;estudiante;no;19;2;0;0;no uso;no;bajo;positiva;incorrecta
+29;29;soltera;superior;catolico;mestizo;rural;estudiante;otro;no;18;1;0;0;no uso;no;medio;positiva;incorrecta
+30;28;soltera;superior;catolico;otro;urbano;estudiante;otro;no;25;1;0;0;no uso;no;medio;positiva;correcta
+31;25;soltera;secundaria;catolico;blanco;rural;estudiante;estudiante;no;18;1;0;0;ampolla mes;no;bajo;negativa;incorrecta
+32;30;soltera;superior;catolico;mestizo;urbano;estudiante;estudiante;si;20;1;0;0;no uso;no;bajo;negativa;incorrecta
+33;25;soltera;superior;catolico;mestizo;urbano;estudiante;otro;no;20;2;0;0;implante_sd;no;bajo;negativa;incorrecta
+34;28;soltera;superior;catolico;mestizo;urbano;empleada;otro;no;17;4;0;0;ampolla mes;no;medio;negativa;incorrecta
+35;25;soltera;superior;catolico;mestizo;urbano;estudiante;otro;no;22;2;0;0;ampolla mes;no;medio;positiva;incorrecta
+36;25;soltera;superior;catolico;mestizo;rural;estudiante;estudiante;no;19;3;0;0;no uso;no;alto;positiva;correcta
+37;25;soltera;superior;catolico;mestizo;urbano;estudiante;estudiante;no;21;1;0;0;no uso;no;alto;positiva;incorrecta
+38;45;conviviente;superior;catolico;mestizo;rural;ama de casa;empleado;si;16;5;4;3;no uso;no;bajo;negativa;incorrecta
+39;42;conviviente;secundaria;catolico;mestizo;rural;empleada;empleado;no;19;2;2;1;aco;no;medio;positiva;incorrecta
+40;50;conviviente;primaria;catolico;mestizo;rural;ama de casa;empleado;si;19;4;3;2;diu;si;bajo;negativa;correcta
+41;51;casada;superior;catolico;mestizo;urbano;empleada;empleado;si;18;2;1;1;ampolla mes;no;medio;negativa;incorrecta
+42;49;casada;secundaria;catolico;mestizo;rural;ama de casa;empleado;no;20;3;3;3;no uso;no;medio;negativa;correcta
+43;54;casada;superior;catolico;mestizo;rural;empleada;empleado;no;20;2;3;3;aco;no;bajo;negativa;incorrecta
+44;46;conviviente;superior;evangelista;blanco;urbano;empleada;empleado;no;17;3;2;2;aco;no;medio;positiva;incorrecta
+45;45;conviviente;superior;evangelista;mestizo;rural;empleada;empleado;no;18;3;3;2;ampolla mes;no;medio;positiva;correcta
+46;55;casada;primaria;catolico;mestizo;rural;ama de casa;empleado;no;18;2;5;3;no uso;no;medio;negativa;correcta
+47;58;viuda;secundaria;catolico;mestizo;urbano;ama de casa;otro;no;18;2;1;1;no uso;no;alto;negativa;correcta
+48;60;viuda;primaria;catolico;mestizo;rural;ama de casa;otro;si;20;1;4;2;no uso;no;no conoce;positiva;incorrecta
+49;51;casada;superior;catolico;mestizo;urbano;ama de casa;empleado;si;18;2;2;2;no uso;no;medio;negativa;correcta
+50;64;casada;primaria;catolico;mestizo;rural;ama de casa;otro;si;22;1;1;1;no uso;no;no conoce;negativa;incorrecta
+51;25;conviviente;superior;catolico;mestizo;urbano;estudiante;empleado;si;18;4;1;1;no uso;no;alto;positiva;correcta
+52;25;soltera;superior;catolico;mestizo;rural;estudiante;otro;no;25;1;0;0;no uso;no;no conoce;negativa;incorrecta
+53;60;casada;secundaria;catolico;mestizo;urbano;ama de casa;otro;no;19;2;2;2;no uso;no;bajo;negativa;incorrecta
+54;49;casada;superior;catolico;mestizo;urbano;otro;empleado;no;13;2;2;2;no uso;no;alto;negativa;correcta
+55;43;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;20;2;2;2;no uso;no;alto;positiva;incorrecta
+56;50;conviviente;superior;evangelista;mestizo;urbano;empleada;empleado;si;20;1;3;3;ampolla de 3 meses;no;alto;negativa;correcta
+57;41;conviviente;superior;catolico;mestizo;rural;empleada;empleado;si;19;1;2;2;aco;no;medio;positiva;correcta
+58;50;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;30;1;2;0;no uso;no;medio;negativa;incorrecta
+59;50;viuda;superior;ninguna;mestizo;rural;otro;otro;no;19;2;2;2;aco;si;medio;positiva;incorrecta
+60;62;casada;secundaria;evangelista;mestizo;urbano;ama de casa;otro;si;20;1;4;3;no uso;no;bajo;negativa;incorrecta
+61;53;soltera;superior;catolico;mestizo;rural;otro;otro;no;25;5;0;0;no uso;no;medio;positiva;incorrecta
+62;35;casada;superior;catolico;mestizo;urbano;ama de casa;empleado;no;18;1;2;2;ampolla mes;no;bajo;negativa;incorrecta
+63;46;conviviente;secundaria;catolico;blanco;urbano;otro;otro;no;20;2;3;3;no uso;no;bajo;negativa;incorrecta
+64;38;conviviente;superior;catolico;mestizo;rural;estudiante;empleado;no;20;3;0;0;no uso;no;alto;positiva;correcta
+65;25;soltera;superior;evangelista;blanco;urbano;estudiante;otro;no;23;1;0;0;no uso;no;medio;negativa;incorrecta
+66;37;conviviente;superior;ninguna;mestizo;urbano;ama de casa;otro;si;18;1;2;2;ampolla de 3 meses;no;medio;negativa;correcta
+67;29;soltera;superior;catolico;mestizo;urbano;otro;empleado;no;20;2;0;0;ampolla mes;no;medio;positiva;correcta
+68;26;soltera;secundaria;catolico;otro;rural;ama de casa;otro;no;18;1;1;1;ampolla de 3 meses;no;bajo;negativa;incorrecta
+69;25;soltera;superior;catolico;otro;urbano;estudiante;estudiante;no;17;2;0;0;no uso;no;bajo;negativa;incorrecta
+70;35;conviviente;superior;catolico;mestizo;urbano;empleada;empleado;no;22;2;2;1;implante_sd;no;medio;positiva;incorrecta
+71;56;casada;superior;catolico;blanco;urbano;empleada;empleado;no;21;2;1;0;ampolla mes;no;medio;negativa;incorrecta
+72;46;conviviente;superior;catolico;mestizo;rural;empleada;sin empleo;si;18;2;2;2;no uso;no;medio;negativa;incorrecta
+73;57;casada;superior;evangelista;blanco;rural;empleada;empleado;no;18;3;4;3;diu;no;medio;negativa;correcta
+74;49;conviviente;superior;evangelista;mestizo;rural;empleada;empleado;no;19;3;3;2;aco;no;medio;negativa;incorrecta
+75;25;soltera;superior;evangelista;mestizo;urbano;estudiante;otro;no;24;2;0;0;no uso;no;bajo;negativa;incorrecta
+76;53;casada;superior;catolico;blanco;urbano;empleada;empleado;no;19;2;1;1;ampolla de 3 meses;no;alto;negativa;correcta
+77;47;conviviente;secundaria;catolico;mestizo;urbano;ama de casa;otro;no;17;2;3;4;no uso;no;medio;negativa;correcta
+78;58;soltera;secundaria;catolico;mestizo;rural;empleada;otro;si;20;3;1;0;diu;no;bajo;negativa;incorrecta
+79;25;soltera;superior;catolico;mestizo;urbano;estudiante;estudiante;no;19;2;0;0;no uso;no;medio;negativa;incorrecta
+80;38;casada;superior;catolico;mestizo;urbano;ama de casa;empleado;no;18;1;2;3;ampolla mes;si;medio;negativa;incorrecta
+81;25;soltera;superior;catolico;blanco;rural;empleada;otro;no;17;1;1;1;aco;no;bajo;negativa;incorrecta
+82;58;casada;superior;catolico;blanco;urbano;empleada;empleado;no;20;3;2;1;ampolla mes;no;medio;positiva;incorrecta
+83;34;soltera;superior;catolico;otro;rural;otro;otro;no;25;0;0;0;no uso;no;alto;negativa;incorrecta
+84;31;conviviente;secundaria;catolico;mestizo;rural;sin empleo;sin empleo;si;13;15;2;2;implante_sd;si;bajo;positiva;incorrecta
+85;26;soltera;superior;catolico;mestizo;urbano;empleada;otro;si;15;4;0;0;aco;no;bajo;positiva;incorrecta
+86;33;soltera;secundaria;catolico;mestizo;urbano;empleada;empleado;no;18;4;3;3;no uso;no;bajo;negativa;correcta
+87;47;soltera;superior;catolico;mestizo;urbano;empleada;otro;no;20;6;1;0;no uso;no;medio;positiva;incorrecta
+88;48;conviviente;secundaria;catolico;mestizo;urbano;otro;otro;si;20;1;3;2;no uso;no;bajo;negativa;incorrecta
+89;60;conviviente;secundaria;evangelista;mestizo;urbano;ama de casa;otro;no;22;1;4;3;implante_sd;no;bajo;negativa;incorrecta
+90;46;soltera;superior;evangelista;mestizo;urbano;empleada;otro;no;19;2;1;1;implante_sd;no;bajo;negativa;incorrecta
+91;35;conviviente;superior;catolico;blanco;urbano;empleada;empleado;no;18;4;2;2;implante_sd;no;bajo;positiva;incorrecta
+92;52;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;25;12;2;1;no uso;no;bajo;negativa;incorrecta
+93;53;casada;secundaria;catolico;mestizo;rural;empleada;empleado;no;19;2;3;3;aco;no;medio;negativa;incorrecta
+94;57;conviviente;secundaria;catolico;mestizo;urbano;empleada;empleado;no;19;2;3;2;ampolla mes;no;medio;positiva;incorrecta
+95;41;casada;superior;evangelista;mestizo;urbano;empleada;empleado;no;16;2;3;2;implante_sd;no;medio;negativa;incorrecta
+96;45;conviviente;secundaria;catolico;mestizo;urbano;ama de casa;empleado;no;20;2;1;1;aco;no;alto;positiva;incorrecta
+97;67;viuda;secundaria;evangelista;mestizo;rural;otro;otro;no;18;2;4;3;implante_sd;no;bajo;negativa;incorrecta
+98;62;casada;secundaria;evangelista;mestizo;urbano;empleada;empleado;si;20;1;3;3;diu;no;bajo;positiva;incorrecta
+99;43;conviviente;superior;catolico;blanco;urbano;empleada;empleado;no;21;3;1;1;ampolla de 3 meses;no;alto;negativa;incorrecta
+100;42;casada;superior;catolico;otro;urbano;empleada;empleado;no;17;3;4;2;diu;no;bajo;negativa;correcta
+101;48;casada;superior;evangelista;mestizo;urbano;empleada;empleado;no;18;2;2;1;ampolla mes;no;medio;positiva;correcta
+102;46;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;21;2;2;1;ampolla de 3 meses;no;medio;positiva;correcta
+103;52;conviviente;superior;catolico;mestizo;urbano;empleada;empleado;no;19;3;2;2;ampolla de 3 meses;no;alto;positiva;incorrecta
+104;35;conviviente;superior;catolico;otro;urbano;empleada;empleado;no;17;4;1;0;implante_sd;no;bajo;negativa;correcta
+105;26;soltera;superior;catolico;mestizo;rural;estudiante;empleado;no;20;1;0;0;no uso;no;alto;positiva;correcta
+106;42;conviviente;secundaria;evangelista;mestizo;rural;ama de casa;empleado;si;16;1;5;6;no uso;no;no conoce;negativa;incorrecta
+107;41;conviviente;superior;evangelista;mestizo;rural;empleada;empleado;no;19;2;3;3;ampolla mes;no;alto;positiva;correcta
+108;49;conviviente;superior;catolico;mestizo;rural;empleada;empleado;no;20;2;2;2;aco;no;medio;positiva;correcta
+109;39;soltera;secundaria;catolico;mestizo;rural;empleada;empleado;si;19;2;1;1;diu;no;bajo;positiva;incorrecta
+110;53;casada;secundaria;catolico;mestizo;rural;empleada;empleado;si;18;2;2;1;diu;no;bajo;negativa;incorrecta
+111;45;viuda;secundaria;evangelista;mestizo;rural;ama de casa;otro;no;17;2;4;5;no uso;no;bajo;negativa;incorrecta
+112;56;casada;secundaria;catolico;blanco;urbano;ama de casa;empleado;si;23;3;2;2;no uso;no;bajo;positiva;incorrecta
+113;58;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;20;2;2;1;ampolla mes;no;alto;positiva;correcta
+114;50;conviviente;superior;catolico;mestizo;urbano;empleada;empleado;si;26;1;3;2;no uso;no;alto;positiva;correcta
+115;47;casada;secundaria;catolico;mestizo;rural;ama de casa;empleado;no;21;3;1;1;ampolla de 3 meses;no;alto;negativa;correcta
+116;54;casada;superior;catolico;mestizo;rural;empleada;empleado;si;20;2;2;1;ampolla de 3 meses;no;medio;positiva;correcta
+117;48;conviviente;secundaria;catolico;otro;urbano;empleada;empleado;no;24;2;3;2;ampolla de 3 meses;no;bajo;negativa;incorrecta
+118;65;conviviente;secundaria;catolico;mestizo;urbano;ama de casa;otro;si;16;1;4;3;no uso;si;bajo;negativa;incorrecta
+119;49;soltera;superior;catolico;mestizo;urbano;ama de casa;otro;si;17;5;2;2;ampolla mes;si;bajo;negativa;incorrecta
+120;53;conviviente;superior;catolico;mestizo;urbano;empleada;empleado;no;18;2;4;4;ampolla de 3 meses;no;alto;positiva;correcta
+121;55;casada;secundaria;catolico;mestizo;rural;empleada;empleado;no;21;2;1;0;ampolla de 3 meses;no;medio;positiva;correcta
+122;53;casada;superior;evangelista;blanco;rural;empleada;empleado;no;21;2;3;2;ampolla mes;no;medio;positiva;incorrecta
+123;46;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;22;2;1;0;ampolla de 3 meses;no;alto;positiva;incorrecta
+124;48;casada;secundaria;catolico;mestizo;rural;empleada;empleado;no;19;2;1;1;ampolla de 3 meses;no;medio;negativa;incorrecta
+125;51;conviviente;superior;evangelista;blanco;rural;empleada;empleado;no;20;3;2;2;ampolla de 3 meses;no;alto;positiva;incorrecta
+126;55;conviviente;superior;catolico;mestizo;urbano;empleada;empleado;no;21;3;2;0;aco;no;medio;positiva;incorrecta
+127;48;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;19;2;1;1;ampolla de 3 meses;no;medio;positiva;correcta
+128;53;casada;superior;catolico;blanco;urbano;empleada;empleado;no;20;2;2;1;ampolla de 3 meses;no;medio;positiva;incorrecta
+129;46;conviviente;superior;catolico;blanco;urbano;empleada;empleado;no;19;3;2;1;ampolla mes;no;alto;positiva;incorrecta
+130;52;casada;superior;evangelista;blanco;urbano;empleada;empleado;no;18;3;2;2;ampolla de 3 meses;no;alto;positiva;incorrecta
+131;57;conviviente;superior;catolico;mestizo;rural;ama de casa;sin empleo;si;18;2;4;3;no uso;no;bajo;positiva;incorrecta
+132;54;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;19;2;3;2;ampolla de 3 meses;no;medio;positiva;incorrecta
+133;58;casada;secundaria;catolico;mestizo;rural;empleada;empleado;no;18;4;3;3;implante_sd;no;medio;negativa;incorrecta
+134;56;conviviente;superior;catolico;mestizo;rural;empleada;empleado;no;18;2;3;2;ampolla de 3 meses;no;alto;positiva;incorrecta
+135;47;casada;superior;catolico;mestizo;rural;empleada;empleado;no;19;2;2;1;ampolla de 3 meses;no;alto;positiva;incorrecta
+136;56;conviviente;superior;catolico;mestizo;urbano;empleada;empleado;si;20;2;2;1;no uso;si;bajo;positiva;incorrecta
+137;39;casada;superior;catolico;otro;rural;empleada;empleado;si;20;3;2;2;diu;no;bajo;negativa;incorrecta
+138;46;casada;secundaria;catolico;mestizo;rural;otro;otro;si;17;1;4;3;ampolla de 3 meses;si;bajo;negativa;incorrecta
+139;42;casada;superior;catolico;blanco;urbano;empleada;empleado;no;19;2;4;3;ampolla de 3 meses;no;alto;positiva;correcta
+140;55;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;19;2;4;3;ampolla de 3 meses;no;alto;positiva;correcta
+141;48;casada;superior;catolico;mestizo;rural;empleada;empleado;no;19;2;2;2;ampolla mes;no;alto;negativa;incorrecta
+142;50;casada;superior;evangelista;blanco;urbano;empleada;empleado;no;20;3;1;1;ampolla mes;no;alto;positiva;correcta
+143;49;casada;superior;catolico;mestizo;rural;empleada;empleado;no;21;2;3;1;aco;no;alto;positiva;incorrecta
+144;53;conviviente;secundaria;catolico;mestizo;rural;ama de casa;empleado;no;20;2;1;1;aco;no;medio;positiva;correcta
+145;43;conviviente;superior;catolico;mestizo;rural;empleada;empleado;no;19;2;3;3;ampolla de 3 meses;no;alto;positiva;correcta
+146;59;casada;superior;catolico;mestizo;rural;empleada;empleado;no;18;2;4;2;aco;no;alto;positiva;incorrecta
+147;45;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;18;2;3;2;diu;no;alto;positiva;correcta
+148;44;casada;superior;catolico;blanco;rural;empleada;empleado;no;18;2;2;2;ampolla mes;no;alto;positiva;incorrecta
+149;42;casada;superior;catolico;mestizo;rural;empleada;empleado;no;20;3;2;2;ampolla mes;no;alto;positiva;correcta
+150;41;conviviente;superior;catolico;mestizo;rural;empleada;empleado;no;18;2;1;1;aco;no;alto;positiva;incorrecta
+151;58;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;20;3;4;3;ampolla mes;no;alto;positiva;correcta
+152;55;casada;superior;catolico;blanco;rural;empleada;empleado;no;21;2;1;0;diu;no;alto;positiva;correcta
+153;45;conviviente;superior;catolico;mestizo;rural;empleada;empleado;no;22;3;2;2;ampolla de 3 meses;no;alto;positiva;incorrecta
+154;56;casada;superior;evangelista;blanco;rural;empleada;empleado;no;19;1;3;2;ampolla de 3 meses;no;alto;positiva;incorrecta
+155;57;casada;superior;catolico;mestizo;urbano;empleada;empleado;si;19;2;1;0;aco;no;alto;positiva;correcta
+156;59;conviviente;superior;catolico;mestizo;urbano;empleada;empleado;no;20;3;3;2;aco;no;alto;positiva;incorrecta
+157;45;conviviente;superior;catolico;mestizo;rural;empleada;empleado;no;20;2;3;1;ampolla mes;no;alto;positiva;correcta
+158;53;conviviente;superior;catolico;blanco;urbano;empleada;empleado;no;19;2;1;1;aco;no;alto;positiva;incorrecta
+159;58;casada;superior;catolico;mestizo;rural;empleada;empleado;no;21;2;2;2;ampolla mes;no;alto;positiva;incorrecta
+160;47;conviviente;superior;evangelista;mestizo;urbano;empleada;empleado;no;18;2;4;4;aco;no;alto;positiva;correcta
+161;49;conviviente;superior;catolico;mestizo;rural;empleada;empleado;no;19;3;3;1;ampolla mes;no;medio;positiva;incorrecta
+162;43;soltera;secundaria;catolico;mestizo;rural;empleada;empleado;si;16;5;3;1;ampolla de 3 meses;no;medio;positiva;incorrecta
+163;51;casada;secundaria;catolico;mestizo;rural;ama de casa;estudiante;si;18;3;2;2;ampolla mes;no;bajo;negativa;incorrecta
+164;44;conviviente;superior;catolico;mestizo;rural;empleada;empleado;si;16;7;4;2;ampolla mes;no;bajo;negativa;correcta
+165;35;conviviente;secundaria;catolico;mestizo;rural;ama de casa;empleado;si;16;2;3;2;ampolla de 3 meses;no;bajo;negativa;incorrecta
+166;45;casada;superior;catolico;mestizo;urbano;ama de casa;empleado;no;18;2;3;3;no uso;no;alto;negativa;correcta
+167;47;conviviente;superior;catolico;mestizo;urbano;empleada;empleado;no;18;2;1;1;aco;no;alto;positiva;incorrecta
+168;64;casada;secundaria;catolico;otro;rural;otro;otro;si;20;2;4;2;no uso;no;bajo;negativa;correcta
+169;49;casada;superior;catolico;blanco;urbano;empleada;empleado;no;18;3;2;1;ampolla de 3 meses;si;bajo;negativa;correcta
+170;55;casada;secundaria;catolico;mestizo;rural;ama de casa;empleado;si;21;2;5;2;ampolla mes;no;bajo;negativa;correcta
+171;53;casada;superior;catolico;mestizo;rural;empleada;empleado;no;20;3;2;2;aco;no;medio;positiva;incorrecta
+172;55;casada;superior;evangelista;blanco;urbano;empleada;empleado;no;21;2;3;3;ampolla de 3 meses;no;medio;positiva;correcta
+173;63;viuda;secundaria;catolico;mestizo;urbano;otro;otro;no;19;3;6;5;no uso;no;bajo;negativa;correcta
+174;39;conviviente;secundaria;catolico;otro;urbano;otro;otro;no;17;5;3;2;aco;si;bajo;positiva;correcta
+175;54;casada;superior;catolico;blanco;urbano;empleada;empleado;no;19;2;1;1;aco;no;alto;positiva;incorrecta
+176;46;conviviente;secundaria;evangelista;mestizo;rural;empleada;empleado;no;18;2;3;2;ampolla mes;no;alto;positiva;incorrecta
+177;47;conviviente;superior;catolico;mestizo;rural;empleada;empleado;no;19;2;2;2;aco;no;alto;positiva;correcta
+178;43;conviviente;superior;catolico;mestizo;rural;empleada;empleado;no;18;2;4;2;ampolla de 3 meses;no;alto;positiva;incorrecta
+179;47;casada;superior;catolico;blanco;urbano;empleada;empleado;no;21;2;2;2;ampolla mes;no;alto;positiva;incorrecta
+180;45;casada;superior;evangelista;mestizo;rural;empleada;empleado;no;20;3;2;2;ampolla mes;no;alto;positiva;incorrecta
+181;58;conviviente;secundaria;catolico;otro;rural;empleada;empleado;no;17;3;4;4;diu;si;bajo;negativa;incorrecta
+182;58;conviviente;secundaria;catolico;mestizo;urbano;estudiante;otro;no;19;2;5;3;ampolla mes;no;bajo;negativa;correcta
+183;51;casada;superior;catolico;mestizo;rural;empleada;empleado;no;20;2;2;2;ampolla de 3 meses;no;alto;positiva;incorrecta
+184;25;casada;superior;evangelista;mestizo;rural;empleada;empleado;no;21;3;2;2;ampolla de 3 meses;no;alto;positiva;incorrecta
+185;55;conviviente;superior;catolico;mestizo;urbano;empleada;empleado;no;19;3;3;2;aco;no;alto;positiva;correcta
+186;41;conviviente;superior;catolico;mestizo;rural;empleada;empleado;no;18;2;3;3;ampolla mes;no;alto;positiva;incorrecta
+187;57;casada;superior;evangelista;mestizo;rural;empleada;empleado;no;21;2;1;1;aco;no;alto;positiva;correcta
+188;55;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;19;2;2;1;ampolla mes;no;alto;positiva;incorrecta
+189;52;casada;superior;catolico;blanco;rural;empleada;empleado;no;19;2;2;2;ampolla mes;no;alto;positiva;incorrecta
+190;45;conviviente;superior;catolico;blanco;rural;empleada;empleado;no;20;2;4;2;ampolla de 3 meses;no;alto;positiva;incorrecta
+191;57;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;20;3;2;2;ampolla mes;no;alto;positiva;incorrecta
+192;48;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;19;3;2;1;aco;no;medio;positiva;incorrecta
+193;55;casada;superior;evangelista;mestizo;rural;empleada;empleado;no;20;2;1;1;aco;no;medio;positiva;correcta
+194;51;casada;superior;catolico;blanco;urbano;empleada;empleado;no;19;3;2;2;ampolla mes;no;medio;positiva;incorrecta
+195;55;casada;superior;catolico;mestizo;rural;empleada;empleado;no;21;3;1;1;aco;no;alto;positiva;incorrecta
+196;52;casada;superior;catolico;mestizo;rural;empleada;empleado;no;20;2;2;2;ampolla de 3 meses;no;medio;positiva;correcta
+197;49;casada;superior;catolico;mestizo;rural;empleada;empleado;no;20;2;2;2;aco;no;medio;positiva;correcta
+198;52;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;19;2;2;1;aco;no;alto;positiva;correcta
+199;42;casada;secundaria;catolico;mestizo;rural;estudiante;empleado;no;19;2;3;2;aco;no;alto;positiva;incorrecta
+200;54;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;20;1;2;2;aco;no;medio;positiva;incorrecta
+201;48;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;19;3;1;1;ampolla mes;no;alto;positiva;incorrecta
+202;49;casada;superior;catolico;mestizo;rural;empleada;empleado;no;18;2;2;1;aco;no;alto;positiva;incorrecta
+203;25;soltera;secundaria;catolico;mestizo;urbano;ama de casa;otro;si;13;1;2;0;ampolla de 3 meses;no;medio;negativa;incorrecta
+204;46;casada;secundaria;catolico;mestizo;urbano;empleada;empleado;no;20;2;1;0;aco;no;alto;positiva;correcta
+205;49;conviviente;superior;catolico;blanco;urbano;empleada;empleado;no;21;3;1;1;ampolla mes;no;alto;positiva;correcta
+206;62;soltera;primaria;catolico;mestizo;rural;ama de casa;otro;no;17;3;6;4;ampolla mes;no;bajo;negativa;incorrecta
+207;52;casada;superior;catolico;blanco;rural;empleada;empleado;no;19;2;1;1;ampolla de 3 meses;no;alto;positiva;correcta
+208;66;viuda;superior;catolico;blanco;rural;otro;otro;no;20;3;3;1;diu;no;bajo;negativa;incorrecta
+209;54;casada;superior;evangelista;mestizo;urbano;empleada;empleado;no;20;3;3;2;ampolla mes;no;alto;negativa;incorrecta
+210;55;casada;superior;catolico;blanco;urbano;empleada;empleado;no;18;2;4;3;ampolla de 3 meses;no;alto;positiva;incorrecta
+211;46;casada;superior;catolico;mestizo;rural;empleada;estudiante;no;19;3;2;0;ampolla mes;no;alto;positiva;incorrecta
+212;57;conviviente;superior;catolico;mestizo;rural;empleada;empleado;no;21;2;3;2;aco;no;alto;positiva;correcta
+213;48;casada;superior;catolico;mestizo;rural;empleada;empleado;no;19;3;1;1;aco;no;alto;positiva;correcta
+214;59;casada;superior;catolico;mestizo;urbano;empleada;empleado;no;20;3;4;4;ampolla de 3 meses;no;alto;positiva;incorrecta
+215;53;casada;superior;catolico;mestizo;rural;empleada;empleado;no;21;2;2;2;aco;no;alto;positiva;correcta
+216;65;soltera;superior;catolico;otro;rural;sin empleo;otro;no;23;3;1;1;diu;no;bajo;negativa;incorrecta
+217;52;conviviente;superior;catolico;mestizo;urbano;empleada;empleado;no;19;1;4;2;diu;si;bajo;negativa;correcta
+218;51;conviviente;superior;catolico;blanco;urbano;empleada;estudiante;no;20;2;2;1;aco;no;alto;positiva;incorrecta

@@ -1,0 +1,481 @@
+---
+title: "prevalence ratio"
+format: html
+editor: visual
+---
+
+## Install packages
+
+```{r}
+# install.packages("here")
+# install.packages("tidyverse")
+# install.packages("finalfit")
+# install.packages("gtsummary")
+# install.packages("flextable")
+# install.packages("geepack")
+# install.packages("broom")
+# install.packages("car")
+# install.packages("readr")
+# install.packages("here")
+```
+
+## Load packages
+
+```{r}
+library(here)
+library(tidyverse)
+library(finalfit)
+library(gtsummary)
+library(flextable)
+library(geepack)
+library(broom)
+library(car)
+library(readr)
+library(survival)
+library(broom)
+library(here)
+```
+
+## Import data
+
+```{r}
+data_factors <- read_delim(here("data", "data_factors.csv"), 
+                            delim = ";", 
+                            escape_double = FALSE, 
+                            trim_ws = TRUE)
+```
+
+## Setting theme
+
+```{r}
+my_gtsummary_theme <-
+  list(
+    "pkgwide-fn:pvalue_fun" = function(x)
+      style_pvalue(x, digits = 2),
+    "pkgwide-fn:prependpvalue_fun" = function(x)
+      style_pvalue(x, digits = 2, prepend_p = TRUE),
+    "tbl_summary-str:continuous_stat" = "{median} ({p25}, {p75})",
+    "tbl_summary-str:categorical_stat" = "{n} ({p}%)",
+    "tbl_summary-fn:percent_fun" = function(x)
+      style_number(x, digits = 1, scale = 100),
+    "tbl_summary-arg:missing" = "no"
+  )
+
+# Set a gtsummary theme
+#set_gtsummary_theme(my_gtsummary_theme, theme_gtsummary_compact())
+set_gtsummary_theme(
+  theme_gtsummary_compact(), my_gtsummary_theme
+)
+reset_gtsummary_theme()
+theme_gtsummary_compact()
+theme_gtsummary_journal(journal = "jama")
+
+# Set a gtsummary language
+theme_gtsummary_language(language = "es")
+```
+
+## Setting up variables
+
+```{r}
+data_factors_1 <-
+  data_factors |>
+  mutate(
+    edad = ff_label(edad, "Edad (años)"),
+    edad.c = case_when(edad < 38 ~ "< 38", edad >= 38 &
+                         edad <= 50 ~ "38-50", edad > 50 ~ "> 50") |>
+      fct_relevel("< 38", "38-50", "> 50") |>
+      ff_label("Edad (años)"),
+    
+    e_marital = factor(e_marital) |> ###
+      fct_recode(
+        "Casada" = "casada",
+        "Conviviente" = "conviviente",
+        "Soltera" = "soltera",
+        "Viuda" = "viuda"
+      ) |>
+      fct_relevel("Casada", "Conviviente", "Soltera", "Viuda") |>
+      ff_label("Estado marital"),
+    
+    n_educacion = factor(n_educacion) |> ###
+      fct_recode(
+        "Primaria" = "primaria",
+        "Secundaria" = "secundaria",
+        "Superior" = "superior"
+      ) |>
+      fct_relevel("Primaria", "Secundaria", "Superior") |>
+      ff_label("Nivel de educación"),
+    
+    religion = factor(religion) |> ###
+      fct_recode(
+        "Ninguna" = "ninguna",
+        "Catolico" = "catolico",
+        "Evangelista" = "evangelista"
+      ) |>
+      fct_relevel("Ninguna", "Catolico", "Evangelista") |>
+      ff_label("Religión"),
+    
+    etnia = factor(etnia) |> ###
+      fct_recode(
+        "Mestizo" = "mestizo",
+        "Blanco" = "blanco",
+        "Otro" = "otro"
+      ) |>
+      fct_relevel("Mestizo", "Blanco", "Otro") |>
+      ff_label("Etnia"),
+    
+    procedencia = factor(procedencia) |> ###
+      fct_recode("Urbano" = "urbano", "Rural" = "rural") |>
+      fct_relevel("Urbano", "Rural") |>
+      ff_label("Procedencia"),
+    
+    ocupacion = factor(ocupacion) |> ###
+      fct_recode(
+        "Estudiante" = "estudiante",
+        "Empleada" = "empleada",
+        "Ama de casa" = "ama de casa",
+        "Otro" = "otro",
+        "Sin empleo" = "sin empleo"
+      ) |>
+      fct_relevel("Estudiante", "Empleada", "Ama de casa", "Otro", "Sin empleo") |>
+      ff_label("Ocupación"),
+    
+    ocupacion_convi = factor(ocupacion_convi) |> ###
+      fct_recode(
+        "Estudiante" = "estudiante",
+        "Empleado" = "empleado",
+        "Otro" = "otro",
+        "Sin empleo" = "sin empleo"
+      ) |>
+      fct_relevel("Estudiante", "Empleado", "Otro", "Sin empleo") |>
+      ff_label("Ocupación de conviviente"),
+    
+    antec_fam = factor(antec_fam) |> ###
+      fct_recode("Si" = "si", "No" = "no") |>
+      fct_relevel("Si", "No") |>
+      ff_label("Antecedente familiar"),
+    
+    edad_relacion_sexual.c = case_when(
+      edad_relacion_sexual >= 22 ~ "22 a más",
+      edad_relacion_sexual >= 19 &
+        edad_relacion_sexual <= 21 ~ "19-21",
+      edad_relacion_sexual <= 18  ~ "18 a menos"
+    )    |>
+      fct_relevel("22 a más", "19-21", "18 a menos") |>
+      ff_label("Edad de inicio de relaciones sexuales"),
+    
+    parejas_sex.c = case_when(
+      parejas_sex <= 1 ~ "0 o 1",
+      parejas_sex == 2 ~ "2",
+      parejas_sex == 3 ~ "3",
+      parejas_sex >= 4 ~ "4 a más"
+    )    |>
+      fct_relevel("0 o 1", "2", "3", "4 a más") |>
+      ff_label("Parejas sexuales"),
+    
+    num_hijos.c = case_when(
+      num_hijos == 0 ~ "0",
+      num_hijos >= 1 & num_hijos <= 2 ~ "1 a 2",
+      num_hijos >= 3 ~ "3 a más"
+    )    |>
+      fct_relevel("0", "1 a 2", "3 a más") |>
+      ff_label("Número de hijos"),
+    
+    num_partos.c = case_when(
+      num_partos >= 3 ~ "3 a más",
+      num_partos == 2 ~ "2",
+      num_partos == 1 ~ "1",
+      num_partos == 0 ~ "0"
+    )    |>
+      fct_relevel("3 a más", "2", "1" , "0") |>
+      ff_label("Número de partos"),
+    
+    met_anticoncep = factor(met_anticoncep) |> ###
+      fct_recode(
+        "No usa" = "no uso",
+        "ACO" = "aco",
+        "Ampolla trimestral" = "ampolla de 3 meses",
+        "Inyeccion mensual" = "ampolla mes",
+        "DIU" = "diu",
+        "Implante subdermico" = "implante_sd"
+      )  |>
+      fct_relevel(
+        "No usa",
+        "ACO",
+        "Ampolla trimestral",
+        "Inyeccion mensual",
+        "DIU",
+        "Implante subdermico"
+      ) |>
+      ff_label("Metodo anticonceptivo"),
+    
+    antec_ets = factor(antec_ets) |> ###
+      fct_recode("Si" = "si", "No" = "no") |>
+      fct_relevel("Si", "No") |>
+      ff_label("Antecedente de ITS"),
+    
+    conocimiento = case_when(
+      conocimiento == "no conoce" |
+        conocimiento == "bajo" ~ "Bajo/no conoce",
+      conocimiento == "medio" ~ "Medio" ,
+      TRUE ~ "Alto"
+    ) |>
+      fct_relevel("Bajo/no conoce", "Medio", "Alto") |>
+      ff_label("Nivel de conocimiento"),
+    
+    conocimiento_dico = case_when(
+      conocimiento == "Bajo/no conoce" |
+        conocimiento == "medio" ~ "Medio a No conoce",
+      TRUE ~ "Alto"
+    ) |>
+      fct_relevel("Medio a No conoce", "Alto") |>
+      ff_label("Nivel de conocimiento"),
+    
+    
+    actitud = case_when(actitud == "negativa" ~ "Negativa", TRUE ~ "Positiva") |>
+      fct_relevel("Negativa", "Positiva") |>
+      ff_label("Actitud"),
+    
+    practica = case_when(practica == "incorrecta" ~ "Incorrecta", TRUE ~ "Correcta") |>
+      fct_relevel("Incorrecta", "Correcta") |>
+      ff_label("Prácticas")
+  )
+```
+
+## Selección de variables
+
+```{r}
+data_factors_2 = 
+  data_factors_1 |>
+  select(
+    edad,
+    edad.c,
+    procedencia,
+    etnia,
+    religion,
+    n_educacion,
+    e_marital,
+    ocupacion,
+    ocupacion_convi,
+    antec_fam,
+    #variables reproductivas y sexuales
+    edad_relacion_sexual.c,
+    parejas_sex.c,
+    num_hijos.c,
+    num_partos.c,
+    met_anticoncep,
+    antec_ets,
+    #variables dependientes
+    conocimiento, 
+    conocimiento_dico,
+    actitud,
+    practica
+  )
+```
+
+## Tablas descriptivas
+
+```{r}
+tabla_1 <-
+  data_factors_2 |>
+  tbl_summary(include = c(edad:religion)) |>
+  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})")
+```
+
+**ANALISIS BIVARIADO O INFERENCIAL**
+
+```{r}
+tabla_2.1 <- data_factors_2 |> 
+  tbl_summary(
+    include = c(edad:antec_ets), 
+    by = conocimiento 
+    ) |>
+  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |>
+  modify_spanning_header(all_stat_cols() ~ "**Nivel de conocimiento**") |> 
+  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>
+  bold_p(t=0.05)
+```
+
+```{r}
+tabla_2.1.dico <- data_factors_2 |> 
+  tbl_summary(
+    include = c(edad:antec_ets), 
+    by = conocimiento_dico 
+    ) |>
+  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |>
+  modify_spanning_header(all_stat_cols() ~ "**Nivel de conocimiento**") |> 
+  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>
+  bold_p(t=0.05)
+```
+
+```{r}
+tabla_2.2 <- data_factors_2 |> 
+  tbl_summary(
+    include = c(edad:antec_ets), 
+    by = actitud 
+    ) |>
+  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |>
+  modify_spanning_header(all_stat_cols() ~ "**Actitud**") |> 
+  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>
+  bold_p(t=0.05)
+```
+
+```{r}
+tabla_2.3 <- data_factors_2 |> 
+  tbl_summary(
+    include = c(edad:antec_ets), 
+    by = practica 
+    ) |>
+  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |>
+  modify_spanning_header(all_stat_cols() ~ "**Practica**") |> 
+  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>
+  bold_p(t=0.05)
+```
+
+**TABLA 3: TABLAS DE ANALISIS DE REGRESION LOGISTICA**
+
+```{r}
+tabla_3.1 <- data_factors_2 |>
+  tbl_uvregression(
+    include = c(edad.c, etnia, n_educacion, e_marital, ocupacion, ocupacion_convi, antec_fam, edad_relacion_sexual.c, parejas_sex.c, num_hijos.c, met_anticoncep, antec_ets),
+    y = conocimiento_dico, 
+    method = glm,
+    method.args = list(family = binomial(link = "logit")),
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    hide_n = TRUE,
+    add_estimate_to_reference_rows = FALSE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)) |> 
+  bold_labels() |>
+  bold_p(t = 0.05) |>
+  modify_header(estimate = "**OR (IC 95%)**", p.value = "**valor P**")
+```
+
+```{r}
+tabla_3.2 <- data_factors_2 |>
+  tbl_uvregression(
+    include = c(edad.c, etnia, n_educacion, ocupacion, ocupacion_convi, antec_fam, edad_relacion_sexual.c, parejas_sex.c, num_hijos.c, num_partos.c, met_anticoncep, antec_ets),
+    y = actitud, 
+    method = glm,
+    method.args = list(family = binomial(link = "logit")),
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    hide_n = TRUE,
+    add_estimate_to_reference_rows = FALSE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)) |> 
+  bold_labels() |>
+  bold_p(t = 0.05) |>
+  modify_header(estimate = "**OR (IC 95%)**", p.value = "**valor P**")
+```
+
+```{r}
+tabla_3.3 <- data_factors_2 |>
+  tbl_uvregression(
+    include = c(edad.c, procedencia,ocupacion_convi, edad_relacion_sexual.c, antec_ets),
+    y = practica, 
+    method = glm,
+    method.args = list(family = binomial(link = "logit")),
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    hide_n = TRUE,
+    add_estimate_to_reference_rows = FALSE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)) |> 
+  bold_labels() |>
+  bold_p(t = 0.05) |>
+  modify_header(estimate = "**OR (IC 95%)**", p.value = "**valor P**")
+```
+
+#TABLA 4: ANALISIS MULTIVARIADO
+
+```{r}
+tabla_4.1.sup <- glm(
+  conocimiento_dico ~
+    edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi + antec_fam + edad_relacion_sexual.c + parejas_sex.c + num_hijos.c + met_anticoncep + antec_ets,
+  data = data_factors_2,
+  family = binomial(link = "logit") ) |>
+  tbl_regression(
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
+  bold_p(t = 0.05) |>
+  add_vif() |>
+  modify_header(estimate = "**OR (IC 95%)**", 
+                p.value = "**valor P**", 
+                aGVIF ~ "**aGVIF**")
+```
+
+```{r}
+tabla_4.1 <- glm(
+  conocimiento_dico ~
+    edad.c + etnia + n_educacion + ocupacion + antec_fam + edad_relacion_sexual.c + parejas_sex.c + met_anticoncep + antec_ets,
+  data = data_factors_2,
+  family = binomial(link = "logit") ) |>
+  tbl_regression(
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
+  bold_p(t = 0.05) |>
+  modify_header(estimate = "**OR (IC 95%)**", 
+                p.value = "**valor P**")
+```
+
+```{r}
+tabla_4.2 <- glm(
+  actitud ~
+    edad.c + etnia + n_educacion + antec_fam + edad_relacion_sexual.c + parejas_sex.c + met_anticoncep + antec_ets,
+  data = data_factors_2,
+  family = binomial(link = "logit") ) |>
+  tbl_regression(
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
+  bold_p(t = 0.05) |>
+  modify_header(estimate = "**OR (IC 95%)**", 
+                p.value = "**valor P**")
+```
+
+```{r}
+tabla_4.3 <- glm(
+  practica ~
+    edad.c + procedencia + ocupacion_convi + edad_relacion_sexual.c + antec_ets,
+  data = data_factors_2,
+  family = binomial(link = "logit") ) |>
+  tbl_regression(
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
+  bold_p(t = 0.05) |>
+  modify_header(estimate = "**OR (IC 95%)**", 
+                p.value = "**valor P**")
+```
+
+#tablas finales
+
+```{r}
+tabla_5.1 =
+  tbl_merge(tbls = list(tabla_3.1, tabla_4.1), tab_spanner = c("**OR no ajustado (95% IC)**",
+                                     "**OR ajustado (95% IC)**"))
+
+```
+
+```{r}
+tabla_5.2 =
+  tbl_merge(tbls = list(tabla_3.2, tabla_4.2), tab_spanner = c("**OR no ajustado (95% IC)**",
+                                     "**OR ajustado (95% IC)**"))
+```
+
+```{r}
+tabla_5.3 =
+  tbl_merge(tbls = list(tabla_3.3, tabla_4.3), tab_spanner = c("**OR no ajustado (95% IC)**",
+                                     "**OR ajustado (95% IC)**"))
+```
