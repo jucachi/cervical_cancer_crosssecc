@@ -463,6 +463,12 @@ tabla_1 <-
   modify_header(all_stat_cols() ~ "**{level}**, (n = {n})")
 ```
 
+```{r}
+table_1 <- as_flex_table(tabla_1)
+# Save tables
+save_as_docx(table_1, path = "Table_1.docx", align = "center")
+```
+
 **ANALISIS BIVARIADO O INFERENCIAL**
 
 ```{r}
@@ -478,6 +484,12 @@ tabla_2.1 <- data_factors_2 |>
 ```
 
 ```{r}
+table_2.1 <- as_flex_table(tabla_2.1)
+# Save tables
+save_as_docx(table_2.1, path = "Table_2.1.docx", align = "center")
+```
+
+```{r}
 tabla_2.1.dico <- data_factors_2 |> 
   tbl_summary(
     include = c(edad:antec_ets), 
@@ -487,6 +499,12 @@ tabla_2.1.dico <- data_factors_2 |>
   modify_spanning_header(all_stat_cols() ~ "**Nivel de conocimiento**") |> 
   add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>
   bold_p(t=0.05)
+```
+
+```{r}
+table_2.1.dico <- as_flex_table(tabla_2.1.dico)
+# Save tables
+save_as_docx(table_2.1.dico, path = "Table_2.1.dico.docx", align = "center")
 ```
 
 ```{r}
@@ -502,6 +520,12 @@ tabla_2.2 <- data_factors_2 |>
 ```
 
 ```{r}
+table_2.2 <- as_flex_table(tabla_2.2)
+# Save tables
+save_as_docx(table_2.2, path = "Table_2.2.docx", align = "center")
+```
+
+```{r}
 tabla_2.3 <- data_factors_2 |> 
   tbl_summary(
     include = c(edad:antec_ets), 
@@ -511,6 +535,12 @@ tabla_2.3 <- data_factors_2 |>
   modify_spanning_header(all_stat_cols() ~ "**Practica**") |> 
   add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>
   bold_p(t=0.05)
+```
+
+```{r}
+table_2.3 <- as_flex_table(tabla_2.3)
+# Save tables
+save_as_docx(table_2.3, path = "Table_2.3.docx", align = "center")
 ```
 
 **TABLA 3: TABLAS DE ANALISIS DE REGRESION LOGISTICA**
@@ -534,6 +564,12 @@ tabla_3.1 <- data_factors_2 |>
 ```
 
 ```{r}
+table_3.1 <- as_flex_table(tabla_3.1)
+# Save tables
+save_as_docx(table_3.1, path = "Table_3.1.docx", align = "center")
+```
+
+```{r}
 tabla_3.2 <- data_factors_2 |>
   tbl_uvregression(
     include = c(edad.c, etnia, n_educacion, ocupacion, ocupacion_convi, antec_fam, edad_relacion_sexual.c, parejas_sex.c, num_hijos.c, num_partos.c, met_anticoncep, antec_ets),
@@ -552,6 +588,12 @@ tabla_3.2 <- data_factors_2 |>
 ```
 
 ```{r}
+table_3.2 <- as_flex_table(tabla_3.2)
+# Save tables
+save_as_docx(table_3.2, path = "Table_3.2.docx", align = "center")
+```
+
+```{r}
 tabla_3.3 <- data_factors_2 |>
   tbl_uvregression(
     include = c(edad.c, procedencia,ocupacion_convi, edad_relacion_sexual.c, antec_ets),
@@ -567,6 +609,12 @@ tabla_3.3 <- data_factors_2 |>
   bold_labels() |>
   bold_p(t = 0.05) |>
   modify_header(estimate = "**OR (IC 95%)**", p.value = "**valor P**")
+```
+
+```{r}
+table_3.3 <- as_flex_table(tabla_3.3)
+# Save tables
+save_as_docx(table_3.3, path = "Table_3.3.docx", align = "center")
 ```
 
 #TABLA 4: ANALISIS MULTIVARIADO
@@ -591,6 +639,12 @@ tabla_4.1.sup <- glm(
 ```
 
 ```{r}
+table_4.1.sup <- as_flex_table(tabla_4.1.sup)
+# Save tables
+save_as_docx(table_4.1.sup, path = "Table_4.1.sup.docx", align = "center")
+```
+
+```{r}
 tabla_4.1 <- glm(
   conocimiento_dico ~
     edad.c + etnia + n_educacion + ocupacion + antec_fam + edad_relacion_sexual.c + parejas_sex.c + met_anticoncep + antec_ets,
@@ -605,6 +659,12 @@ tabla_4.1 <- glm(
   bold_p(t = 0.05) |>
   modify_header(estimate = "**OR (IC 95%)**", 
                 p.value = "**valor P**")
+```
+
+```{r}
+table_4.1 <- as_flex_table(tabla_4.1)
+# Save tables
+save_as_docx(table_4.1, path = "Table_4.1.docx", align = "center")
 ```
 
 ```{r}
@@ -625,6 +685,12 @@ tabla_4.2 <- glm(
 ```
 
 ```{r}
+table_4.2 <- as_flex_table(tabla_4.2)
+# Save tables
+save_as_docx(table_4.2, path = "Table_4.2.docx", align = "center")
+```
+
+```{r}
 tabla_4.3 <- glm(
   practica ~
     edad.c + procedencia + ocupacion_convi + edad_relacion_sexual.c + antec_ets,
@@ -641,6 +707,12 @@ tabla_4.3 <- glm(
                 p.value = "**valor P**")
 ```
 
+```{r}
+table_4.3 <- as_flex_table(tabla_4.3)
+# Save tables
+save_as_docx(table_4.3, path = "Table_4.3.docx", align = "center")
+```
+
 #tablas finales
 
 ```{r}
@@ -651,13 +723,31 @@ tabla_5.1 =
 ```
 
 ```{r}
+table_5.1 <- as_flex_table(tabla_5.1)
+# Save tables
+save_as_docx(table_5.1, path = "Table_5.1.docx", align = "center")
+```
+
+```{r}
 tabla_5.2 =
   tbl_merge(tbls = list(tabla_3.2, tabla_4.2), tab_spanner = c("**OR no ajustado (95% IC)**",
                                      "**OR ajustado (95% IC)**"))
 ```
 
 ```{r}
+table_5.2 <- as_flex_table(tabla_5.2)
+# Save tables
+save_as_docx(table_5.2, path = "Table_5.2.docx", align = "center")
+```
+
+```{r}
 tabla_5.3 =
   tbl_merge(tbls = list(tabla_3.3, tabla_4.3), tab_spanner = c("**OR no ajustado (95% IC)**",
                                      "**OR ajustado (95% IC)**"))
+```
+
+```{r}
+table_5.3 <- as_flex_table(tabla_5.3)
+# Save tables
+save_as_docx(table_5.3, path = "Table_5.3.docx", align = "center")
 ```
