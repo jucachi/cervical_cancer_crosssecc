@@ -17,6 +17,7 @@ editor: visual
 # install.packages("car")
 # install.packages("readr")
 # install.packages("here")
+# install.packages("ggpubr")
 ```
 
 ## Load packages
@@ -34,6 +35,7 @@ library(readr)
 library(survival)
 library(broom)
 library(here)
+library(ggpubr)
 ```
 
 ## Import data
