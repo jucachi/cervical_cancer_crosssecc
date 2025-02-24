@@ -6,22 +6,6 @@ format:
     code-copy: true
 ---
 
-## Install packages
-
-```{r}
-# install.packages("here")
-# install.packages("tidyverse")
-# install.packages("finalfit")
-# install.packages("gtsummary")
-# install.packages("flextable")
-# install.packages("geepack")
-# install.packages("broom")
-# install.packages("car")
-# install.packages("readr")
-# install.packages("here")
-# install.packages("ggpubr")
-```
-
 ## Load packages
 
 ```{r}
@@ -94,13 +78,13 @@ data_factors_0 <-
       fct_relevel("Married", "Cohabiting", "Single", "Widowed") |>
       ff_label("Marital status"),
     
-    n_educacion = factor(n_educacion) |> ###
+    n_educacion = factor(n_educacion) |> # Changed
       fct_recode(
-        "Primary" = "primaria",
-        "Secondary" = "secundaria",
-        "Higher" = "superior"
+        "Primary or Secundary" = "primaria",
+        "Primary or Secundary" = "secundaria",
+        "Higher than Secondary" = "superior"
       ) |>
-      fct_relevel("Primary", "Secondary", "Higher") |>
+      fct_relevel("Primary or Secundary", "Higher than Secondary") |>
       ff_label("Education level"),
     
     religion = factor(religion) |> ###
@@ -131,20 +115,20 @@ data_factors_0 <-
         "Student" = "estudiante",
         "Employed" = "empleada",
         "Homemaker" = "ama de casa",
+        "Unemployed" = "sin empleo",
         "Other" = "otro",
-        "Unemployed" = "sin empleo"
       ) |>
-      fct_relevel("Student", "Employed", "Homemaker", "Other", "Unemployed") |>
+      fct_relevel("Student", "Employed", "Homemaker", "Unemployed", "Other") |>
       ff_label("Occupation"),
     
     ocupacion_convi = factor(ocupacion_convi) |> ###
       fct_recode(
         "Student" = "estudiante",
         "Employed" = "empleado",
-        "Other" = "otro",
-        "Unemployed" = "sin empleo"
+        "Unemployed" = "sin empleo",
+        "Other" = "otro"
       ) |>
-      fct_relevel("Student", "Employed", "Other", "Unemployed") |>
+      fct_relevel("Student", "Employed", "Unemployed", "Other") |>
       ff_label("Partner's occupation"),
     
     antec_fam = factor(antec_fam) |> ###
@@ -153,54 +137,45 @@ data_factors_0 <-
       ff_label("Family history"),
     
     edad_relacion_sexual.c = case_when(
-      edad_relacion_sexual >= 22 ~ "22 or older",
+      edad_relacion_sexual <= 18  ~ "18 or younger",
       edad_relacion_sexual >= 19 &
-        edad_relacion_sexual <= 21 ~ "19-21",
-      edad_relacion_sexual <= 18  ~ "18 or younger"
-    )    |>
-      fct_relevel("22 or older", "19-21", "18 or younger") |>
+      edad_relacion_sexual <= 21 ~ "19-21",
+      edad_relacion_sexual >= 22 ~ "22 or older"
+      ) |>
+      fct_relevel("18 or younger", "19-21", "22 or older") |>
       ff_label("Age at first sexual intercourse"),
-    
+
     parejas_sex.c = case_when(
       parejas_sex <= 1 ~ "0 or 1",
       parejas_sex == 2 ~ "2",
       parejas_sex == 3 ~ "3",
       parejas_sex >= 4 ~ "4 or more"
-    )    |>
+    ) |>
       fct_relevel("0 or 1", "2", "3", "4 or more") |>
       ff_label("Number of sexual partners"),
     
-    num_hijos.c = case_when(
+    num_hijos.c = case_when( ### Changed
       num_hijos == 0 ~ "0",
-      num_hijos >= 1 & num_hijos <= 2 ~ "1 to 2",
+      num_hijos == 1 ~ "1",
+      num_hijos == 2 ~ "2",
       num_hijos >= 3 ~ "3 or more"
-    )    |>
-      fct_relevel("0", "1 to 2", "3 or more") |>
+    ) |>
+      fct_relevel("0", "1", "2", "3 or more") |>
       ff_label("Number of children"),
-    
-    num_partos.c = case_when(
-      num_partos >= 3 ~ "3 or more",
-      num_partos == 2 ~ "2",
-      num_partos == 1 ~ "1",
-      num_partos == 0 ~ "0"
-    )    |>
-      fct_relevel("3 or more", "2", "1" , "0") |>
-      ff_label("Number of deliveries"),
-    
-    met_anticoncep = factor(met_anticoncep) |> ###
+
+    met_anticoncep = factor(met_anticoncep) |> # Changed
       fct_recode(
         "Not using" = "no uso",
         "Oral contraceptives" = "aco",
-        "Quarterly injection" = "ampolla de 3 meses",
-        "Monthly injection" = "ampolla mes",
+        "Injection" = "ampolla de 3 meses",
+        "Injection" = "ampolla mes",
         "IUD" = "diu",
         "Subdermal implant" = "implante_sd"
       )  |>
       fct_relevel(
         "Not using",
         "Oral contraceptives",
-        "Quarterly injection",
-        "Monthly injection",
+        "Injection",
         "IUD",
         "Subdermal implant"
       ) |>
@@ -259,7 +234,6 @@ data_factors_1 =
     edad_relacion_sexual.c,
     parejas_sex.c,
     num_hijos.c,
-    num_partos.c,
     met_anticoncep,
     antec_ets,
     #variables dependientes
@@ -299,15 +273,15 @@ table_1 <-
 ```
 
 ```{r}
-table_1 <- as_flex_table(tabla_1)
+table_1 <- as_flex_table(table_1)
 # Save tables
 save_as_docx(table_1, path = "Table_1.docx", align = "center")
 ```
 
-## Table 2 with three categories of level of knowledge
+## Table 1s. with three categories of level of knowledge
 
 ```{r}
-table_2.1 <-
+table_1.1.s <-
   data_factors_1 |>
   tbl_summary(include = c(edad:antec_fam),
               by = conocimiento) |>
@@ -316,7 +290,7 @@ table_2.1 <-
   modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |> 
   modify_spanning_header(all_stat_cols(stat_0 = FALSE) ~ "**Level of knowledge**")
 
-table_2.2 <-
+table_1.1.s <-
   data_factors_1 |>
   tbl_summary(include = c(edad_relacion_sexual.c:antec_ets),
               by = conocimiento) |>
@@ -324,7 +298,7 @@ table_2.2 <-
   bold_p(t=0.05) |> 
   modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") 
 
-table_2 <-
+table_1s <-
   tbl_stack(
     list(table_2.1, table_2.2),
     group_header = c(
@@ -338,15 +312,15 @@ table_2 <-
 ```
 
 ```{r}
-table_2 <- as_flex_table(tabla_2.1)
+table_2 <- as_flex_table(table_2.1)
 # Save tables
 save_as_docx(table_2.1, path = "Table_2.1.docx", align = "center")
 ```
 
-## Table 3 with two categories of level of knowledge
+## Table 2. Level of knowledge with two categories
 
 ```{r}
-table_3.1 <-
+table_2.1 <-
   data_factors_1 |>
   tbl_summary(include = c(edad:antec_fam),
               by = conocimiento_dico) |>
@@ -355,12 +329,50 @@ table_3.1 <-
   modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |> 
   modify_spanning_header(all_stat_cols(stat_0 = FALSE) ~ "**Level of knowledge**")
 
-table_3.2 <-
+table_2.2 <-
   data_factors_1 |>
   tbl_summary(include = c(edad_relacion_sexual.c:antec_ets),
               by = conocimiento_dico) |>
   add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
   bold_p(t=0.05) |> 
+  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") 
+
+table_2 <-
+  tbl_stack(
+    list(table_2.1, table_2.2),
+    group_header = c(
+      "Demographics",
+      "Reproductive and sexual characteristics"
+    )
+  ) |>
+  modify_caption(
+    "Table 2. Sociodemographic and reproductive related characteristics by level of knowledge among women in Ica, Peru")
+```
+
+```{r}
+table_2 <- as_flex_table(table_2)
+# Save tables
+save_as_docx(table_2, path = "Table_2.docx", align = "center")
+```
+
+## Table 3. Attitudes
+
+```{r}
+table_3.1 <-
+  data_factors_1 |>
+  tbl_summary(include = c(edad:antec_fam),
+              by = actitud) |>
+  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
+  bold_p(t = 0.05) |> 
+  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |> 
+  modify_spanning_header(all_stat_cols(stat_0 = FALSE) ~ "**Attitudes toward cervix cancer**")
+
+table_3.2 <-
+  data_factors_1 |>
+  tbl_summary(include = c(edad_relacion_sexual.c:antec_ets),
+              by = actitud) |>
+  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
+  bold_p(t = 0.05) |> 
   modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") 
 
 table_3 <-
@@ -372,31 +384,31 @@ table_3 <-
     )
   ) |>
   modify_caption(
-    "**Table 3**. Bivariate analysis of the characteristics of the surveyed women")
+    "Table 3. Sociodemographic and reproductive related characteristics by attitudes among women in Ica, Peru")
 ```
 
 ```{r}
 table_3 <- as_flex_table(table_3)
 # Save tables
-save_as_docx(table_3, path = "Table_2.1.dico.docx", align = "center")
+save_as_docx(table_3, path = "Table_3.docx", align = "center")
 ```
 
-## Table 4
+## Table 4. Practices
 
 ```{r}
 table_4.1 <-
   data_factors_1 |>
   tbl_summary(include = c(edad:antec_fam),
-              by = actitud) |>
+              by = practica) |>
   add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
   bold_p(t=0.05) |> 
   modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |> 
-  modify_spanning_header(all_stat_cols(stat_0 = FALSE) ~ "**Attitud toward cervix cancer**")
+  modify_spanning_header(all_stat_cols(stat_0 = FALSE) ~ "**Practices regarding cervix cancer**")
 
 table_4.2 <-
   data_factors_1 |>
   tbl_summary(include = c(edad_relacion_sexual.c:antec_ets),
-              by = actitud) |>
+              by = practica) |>
   add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
   bold_p(t=0.05) |> 
   modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") 
@@ -410,35 +422,47 @@ table_4 <-
     )
   ) |>
   modify_caption(
-    "**Table 4**. Bivariate analysis of the characteristics of the surveyed women")
+    "**Table 4**. Sociodemographic and reproductive related characteristics by practice among surveyed women in Ica, Peru")
 ```
 
 ```{r}
-table_4 <- as_flex_table(tabla_4)
+table_4 <- as_flex_table(table_4)
 # Save tables
-save_as_docx(table_2.2, path = "Table_2.2.docx", align = "center")
+save_as_docx(table_4, path = "Table_4.docx", align = "center")
 ```
-
 
 ## Logistic regression analysis
 
+### Variables selection for univariate logistic regression
+
 ```{r}
-tabla_3.1 <- data_factors_2 |>
+data_uv = 
+  data_factors_1 |> 
+  select(
+    edad.c:antec_ets,
+    conocimiento_dico,
+    actitud,
+    practica
+  )
+```
+
+### Table 5. Variables that contribute to high knowledge
+
+```{r}
+tabla_5.1 <- data_uv |>
   tbl_uvregression(
-    include = c(
-      edad.c,
-      etnia,
-      n_educacion,
-      e_marital,
-      ocupacion,
-      ocupacion_convi,
-      antec_fam,
-      edad_relacion_sexual.c,
-      parejas_sex.c,
-      num_hijos.c,
-      met_anticoncep,
-      antec_ets
-    ),
+    include = c(edad.c,
+                etnia,
+                n_educacion,
+                e_marital,
+                ocupacion,
+                ocupacion_convi,
+                antec_fam,
+                edad_relacion_sexual.c,
+                parejas_sex.c,
+                num_hijos.c,
+                met_anticoncep
+                ),
     y = conocimiento_dico,
     method = glm,
     method.args = list(family = binomial(link = "logit")),
@@ -451,20 +475,60 @@ tabla_3.1 <- data_factors_2 |>
   ) |>
   bold_labels() |>
   bold_p(t = 0.05) |>
-  modify_header(estimate = "**OR (IC 95%)**", p.value = "**valor P**")
+  modify_header(estimate = "**OR**", p.value = "**P value**")
 ```
 
 ```{r}
-table_3.1 <- as_flex_table(tabla_3.1)
+tabla_5.2 <- glm(
+  conocimiento_dico ~
+    edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi + 
+    antec_fam + edad_relacion_sexual.c + parejas_sex.c + num_hijos.c + 
+    met_anticoncep,
+  data = data_uv,
+  family = binomial(link = "logit") ) |>
+  tbl_regression(
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
+  bold_p(t = 0.05) |>
+  modify_header(estimate = "**OR**", 
+                p.value = "**P value**")
+```
+
+### Merge tables
+
+```{r}
+table_5 =
+  tbl_merge(tbls = 
+              list(tabla_5.1, tabla_5.2), 
+            tab_spanner = c("**Univariate analysis**",
+                            "**Multivariate analysis**"))
+```
+
+```{r}
+table_5 <- as_flex_table(table_5)
 # Save tables
-save_as_docx(table_3.1, path = "Table_3.1.docx", align = "center")
+save_as_docx(table_5, path = "Table_5.docx", align = "center")
 ```
 
+### Table 6. Variables that contribute to good attitudes
+
 ```{r}
-tabla_3.2 <- data_factors_2 |>
+tabla_6.1 <- data_uv |>
   tbl_uvregression(
-    include = c(edad.c, etnia, n_educacion, ocupacion, ocupacion_convi, antec_fam, edad_relacion_sexual.c, parejas_sex.c, num_hijos.c, num_partos.c, met_anticoncep, antec_ets),
-    y = actitud, 
+    include = c(etnia,
+                n_educacion,
+                ocupacion,
+                ocupacion_convi,
+                antec_fam,
+                edad_relacion_sexual.c,
+                parejas_sex.c,
+                num_hijos.c,
+                met_anticoncep
+                ),
+    y = actitud,
     method = glm,
     method.args = list(family = binomial(link = "logit")),
     exponentiate = TRUE,
@@ -472,23 +536,58 @@ tabla_3.2 <- data_factors_2 |>
     hide_n = TRUE,
     add_estimate_to_reference_rows = FALSE,
     pvalue_fun = ~ style_pvalue(.x, digits = 3),
-    estimate_fun = ~ style_number(.x, digits = 2)) |> 
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
   bold_labels() |>
   bold_p(t = 0.05) |>
-  modify_header(estimate = "**OR (IC 95%)**", p.value = "**valor P**")
+  modify_header(estimate = "**OR**", p.value = "**P value**")
 ```
 
 ```{r}
-table_3.2 <- as_flex_table(tabla_3.2)
+tabla_6.2 <- glm(
+  actitud ~ etnia + n_educacion + ocupacion + ocupacion_convi + antec_fam +
+    edad_relacion_sexual.c + parejas_sex.c + num_hijos.c + met_anticoncep,
+    data = data_uv,
+  family = binomial(link = "logit") ) |>
+  tbl_regression(
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
+  bold_p(t = 0.05) |>
+  modify_header(estimate = "**OR**", 
+                p.value = "**P value**")
+```
+
+### Merge tables
+
+```{r}
+table_6 =
+  tbl_merge(tbls = 
+              list(tabla_6.1, tabla_6.2), 
+            tab_spanner = c("**Univariate analysis**",
+                            "**Multivariate analysis**"))
+```
+
+```{r}
+table_6 <- as_flex_table(table_6)
 # Save tables
-save_as_docx(table_3.2, path = "Table_3.2.docx", align = "center")
+save_as_docx(table_6, path = "Table_6.docx", align = "center")
 ```
 
+### Table 7. Variables that contribute to good practices
+
 ```{r}
-tabla_3.3 <- data_factors_2 |>
+tabla_7.1 <- data_uv |>
   tbl_uvregression(
-    include = c(edad.c, procedencia,ocupacion_convi, edad_relacion_sexual.c, antec_ets),
-    y = practica, 
+    include = c(edad.c,
+                e_marital,
+                ocupacion_convi,
+                edad_relacion_sexual.c,
+                num_hijos.c,
+                ),
+    y = practica,
     method = glm,
     method.args = list(family = binomial(link = "logit")),
     exponentiate = TRUE,
@@ -496,25 +595,18 @@ tabla_3.3 <- data_factors_2 |>
     hide_n = TRUE,
     add_estimate_to_reference_rows = FALSE,
     pvalue_fun = ~ style_pvalue(.x, digits = 3),
-    estimate_fun = ~ style_number(.x, digits = 2)) |> 
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
   bold_labels() |>
   bold_p(t = 0.05) |>
-  modify_header(estimate = "**OR (IC 95%)**", p.value = "**valor P**")
+  modify_header(estimate = "**OR**", p.value = "**P value**")
 ```
 
 ```{r}
-table_3.3 <- as_flex_table(tabla_3.3)
-# Save tables
-save_as_docx(table_3.3, path = "Table_3.3.docx", align = "center")
-```
-
-#TABLA 4: ANALISIS MULTIVARIADO
-
-```{r}
-tabla_4.1.sup <- glm(
-  conocimiento_dico ~
-    edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi + antec_fam + edad_relacion_sexual.c + parejas_sex.c + num_hijos.c + met_anticoncep + antec_ets,
-  data = data_factors_2,
+tabla_7.2 <- glm(
+  practica ~ edad.c + e_marital + ocupacion_convi + edad_relacion_sexual.c +
+    num_hijos.c,
+  data = data_uv,
   family = binomial(link = "logit") ) |>
   tbl_regression(
     exponentiate = TRUE,
@@ -523,122 +615,22 @@ tabla_4.1.sup <- glm(
     estimate_fun = ~ style_number(.x, digits = 2)
   ) |>
   bold_p(t = 0.05) |>
-  add_vif() |>
-  modify_header(estimate = "**OR (IC 95%)**", 
-                p.value = "**valor P**", 
-                aGVIF ~ "**aGVIF**")
+  modify_header(estimate = "**OR**", 
+                p.value = "**P value**")
+```
+
+### Merge tables
+
+```{r}
+table_7 =
+  tbl_merge(tbls = 
+              list(tabla_7.1, tabla_7.2), 
+            tab_spanner = c("**Univariate analysis**",
+                            "**Multivariate analysis**"))
 ```
 
 ```{r}
-table_4.1.sup <- as_flex_table(tabla_4.1.sup)
+table_7 <- as_flex_table(table_7)
 # Save tables
-save_as_docx(table_4.1.sup, path = "Table_4.1.sup.docx", align = "center")
-```
-
-```{r}
-tabla_4.1 <- glm(
-  conocimiento_dico ~
-    edad.c + etnia + n_educacion + ocupacion + antec_fam + edad_relacion_sexual.c + parejas_sex.c + met_anticoncep + antec_ets,
-  data = data_factors_2,
-  family = binomial(link = "logit") ) |>
-  tbl_regression(
-    exponentiate = TRUE,
-    conf.int = TRUE,
-    pvalue_fun = ~ style_pvalue(.x, digits = 3),
-    estimate_fun = ~ style_number(.x, digits = 2)
-  ) |>
-  bold_p(t = 0.05) |>
-  modify_header(estimate = "**OR (IC 95%)**", 
-                p.value = "**valor P**")
-```
-
-```{r}
-table_4.1 <- as_flex_table(tabla_4.1)
-# Save tables
-save_as_docx(table_4.1, path = "Table_4.1.docx", align = "center")
-```
-
-```{r}
-tabla_4.2 <- glm(
-  actitud ~
-    edad.c + etnia + n_educacion + antec_fam + edad_relacion_sexual.c + parejas_sex.c + met_anticoncep + antec_ets,
-  data = data_factors_2,
-  family = binomial(link = "logit") ) |>
-  tbl_regression(
-    exponentiate = TRUE,
-    conf.int = TRUE,
-    pvalue_fun = ~ style_pvalue(.x, digits = 3),
-    estimate_fun = ~ style_number(.x, digits = 2)
-  ) |>
-  bold_p(t = 0.05) |>
-  modify_header(estimate = "**OR (IC 95%)**", 
-                p.value = "**valor P**")
-```
-
-```{r}
-table_4.2 <- as_flex_table(tabla_4.2)
-# Save tables
-save_as_docx(table_4.2, path = "Table_4.2.docx", align = "center")
-```
-
-```{r}
-tabla_4.3 <- glm(
-  practica ~
-    edad.c + procedencia + ocupacion_convi + edad_relacion_sexual.c + antec_ets,
-  data = data_factors_2,
-  family = binomial(link = "logit") ) |>
-  tbl_regression(
-    exponentiate = TRUE,
-    conf.int = TRUE,
-    pvalue_fun = ~ style_pvalue(.x, digits = 3),
-    estimate_fun = ~ style_number(.x, digits = 2)
-  ) |>
-  bold_p(t = 0.05) |>
-  modify_header(estimate = "**OR (IC 95%)**", 
-                p.value = "**valor P**")
-```
-
-```{r}
-table_4.3 <- as_flex_table(tabla_4.3)
-# Save tables
-save_as_docx(table_4.3, path = "Table_4.3.docx", align = "center")
-```
-
-#tablas finales
-
-```{r}
-tabla_5.1 =
-  tbl_merge(tbls = list(tabla_3.1, tabla_4.1), tab_spanner = c("**OR no ajustado (95% IC)**",
-                                     "**OR ajustado (95% IC)**"))
-
-```
-
-```{r}
-table_5.1 <- as_flex_table(tabla_5.1)
-# Save tables
-save_as_docx(table_5.1, path = "Table_5.1.docx", align = "center")
-```
-
-```{r}
-tabla_5.2 =
-  tbl_merge(tbls = list(tabla_3.2, tabla_4.2), tab_spanner = c("**OR no ajustado (95% IC)**",
-                                     "**OR ajustado (95% IC)**"))
-```
-
-```{r}
-table_5.2 <- as_flex_table(tabla_5.2)
-# Save tables
-save_as_docx(table_5.2, path = "Table_5.2.docx", align = "center")
-```
-
-```{r}
-tabla_5.3 =
-  tbl_merge(tbls = list(tabla_3.3, tabla_4.3), tab_spanner = c("**OR no ajustado (95% IC)**",
-                                     "**OR ajustado (95% IC)**"))
-```
-
-```{r}
-table_5.3 <- as_flex_table(tabla_5.3)
-# Save tables
-save_as_docx(table_5.3, path = "Table_5.3.docx", align = "center")
+save_as_docx(table_7, path = "Table_7.docx", align = "center")
 ```
