@@ -6,219 +6,66 @@ format:
     code-copy: true
 ---
 
-## Load packages
+# Load packages
 
 ```{r}
 pacman::p_load(
-  here, 
-  tidyverse, 
-  finalfit, 
-  gtsummary, 
-  flextable, 
-  geepack, 
-  broom, 
-  car, 
-  readr, 
-  survival, 
-  ggpubr
+  rio,
+  here,
+  tidyverse,
+  finalfit,
+  gtsummary,
+  flextable,
+  geepack,
+  broom,
+  car,
+  readr,
+  survival,
+  ggpubr,
+  ggsci,
+  ggstats,
+  rfextras
 )
 
+# Run all scripts
+rfextras::load_scripts()
 ```
 
-## Import data
+# Import data
 
 ```{r}
-data_factors <- read_delim(here("data", "data_factors.csv"), 
-                            delim = ";", 
-                            escape_double = FALSE, 
-                            trim_ws = TRUE)
+# Data
+data_factors <- rio::import(here("data", "data_factors.csv"))
+
+# Attitudes
+attitudes_data <- rio::import(here("data", "attitudes.csv"))
+
+# Knowledges
+knowledges_data <- rio::import(here("data", "knowledges.csv"))
+
+# Practices
+practices_data <- rio::import(here("data", "practices.csv"))
 ```
 
-## Setting theme and language
+# Set theme and language
 
 ```{r}
-my_gtsummary_theme <-
-  list(
-    "pkgwide-fn:pvalue_fun" = function(x)
-      style_pvalue(x, digits = 2),
-    "pkgwide-fn:prependpvalue_fun" = function(x)
-      style_pvalue(x, digits = 2, prepend_p = TRUE),
-    "tbl_summary-str:continuous_stat" = "{median} ({p25}, {p75})",
-    "tbl_summary-str:categorical_stat" = "{n} ({p}%)",
-    "tbl_summary-fn:percent_fun" = function(x)
-      style_number(x, digits = 1, scale = 100),
-    "tbl_summary-arg:missing" = "no"
-  )
+# Set a gtsummary theme
+gtsummary::theme_gtsummary_compact()
+gtsummary::theme_gtsummary_journal(journal = "nejm")
 
-set_gtsummary_theme(theme_gtsummary_compact(), 
-                    my_gtsummary_theme)
-
-theme_gtsummary_language(language = "en")
+# Set a gtsummary language
+gtsummary::theme_gtsummary_language(language = "en")
 ```
 
-## Setting up variables
+# Process data
+
+## Variable selection
 
 ```{r}
-data_factors_0 <-
-  data_factors |>
-  mutate(
-    edad = ff_label(edad, "Age (years)"),
-    edad.c = case_when(edad < 38 ~ "< 38", edad >= 38 &
-                         edad <= 50 ~ "38-50", edad > 50 ~ "> 50") |>
-      fct_relevel("< 38", "38-50", "> 50") |>
-      ff_label("Age (years)"),
-    
-    e_marital = factor(e_marital) |> ###
-      fct_recode(
-        "Married" = "casada",
-        "Cohabiting" = "conviviente",
-        "Single" = "soltera",
-        "Widowed" = "viuda"
-      ) |>
-      fct_relevel("Married", "Cohabiting", "Single", "Widowed") |>
-      ff_label("Marital status"),
-    
-    n_educacion = factor(n_educacion) |> # Changed
-      fct_recode(
-        "Primary or Secundary" = "primaria",
-        "Primary or Secundary" = "secundaria",
-        "Higher than Secondary" = "superior"
-      ) |>
-      fct_relevel("Primary or Secundary", "Higher than Secondary") |>
-      ff_label("Education level"),
-    
-    religion = factor(religion) |> ###
-      fct_recode(
-        "None" = "ninguna",
-        "Catholic" = "catolico",
-        "Evangelical" = "evangelista"
-      ) |>
-      fct_relevel("None", "Catholic", "Evangelical") |>
-      ff_label("Religion"),
-    
-    etnia = factor(etnia) |> ###
-      fct_recode(
-        "Mestizo" = "mestizo",
-        "White" = "blanco",
-        "Other" = "otro"
-      ) |>
-      fct_relevel("Mestizo", "White", "Other") |>
-      ff_label("Ethnicity"),
-    
-    procedencia = factor(procedencia) |> ###
-      fct_recode("Urban" = "urbano", "Rural" = "rural") |>
-      fct_relevel("Urban", "Rural") |>
-      ff_label("Origin"),
-    
-    ocupacion = factor(ocupacion) |> ###
-      fct_recode(
-        "Student" = "estudiante",
-        "Employed" = "empleada",
-        "Homemaker" = "ama de casa",
-        "Unemployed" = "sin empleo",
-        "Other" = "otro",
-      ) |>
-      fct_relevel("Student", "Employed", "Homemaker", "Unemployed", "Other") |>
-      ff_label("Occupation"),
-    
-    ocupacion_convi = factor(ocupacion_convi) |> ###
-      fct_recode(
-        "Student" = "estudiante",
-        "Employed" = "empleado",
-        "Unemployed" = "sin empleo",
-        "Other" = "otro"
-      ) |>
-      fct_relevel("Student", "Employed", "Unemployed", "Other") |>
-      ff_label("Partner's occupation"),
-    
-    antec_fam = factor(antec_fam) |> ###
-      fct_recode("Yes" = "si", "No" = "no") |>
-      fct_relevel("Yes", "No") |>
-      ff_label("Family history"),
-    
-    edad_relacion_sexual.c = case_when(
-      edad_relacion_sexual <= 18  ~ "18 or younger",
-      edad_relacion_sexual >= 19 &
-      edad_relacion_sexual <= 21 ~ "19-21",
-      edad_relacion_sexual >= 22 ~ "22 or older"
-      ) |>
-      fct_relevel("18 or younger", "19-21", "22 or older") |>
-      ff_label("Age at first sexual intercourse"),
-
-    parejas_sex.c = case_when(
-      parejas_sex <= 1 ~ "0 or 1",
-      parejas_sex == 2 ~ "2",
-      parejas_sex == 3 ~ "3",
-      parejas_sex >= 4 ~ "4 or more"
-    ) |>
-      fct_relevel("0 or 1", "2", "3", "4 or more") |>
-      ff_label("Number of sexual partners"),
-    
-    num_hijos.c = case_when( ### Changed
-      num_hijos == 0 ~ "0",
-      num_hijos == 1 ~ "1",
-      num_hijos == 2 ~ "2",
-      num_hijos >= 3 ~ "3 or more"
-    ) |>
-      fct_relevel("0", "1", "2", "3 or more") |>
-      ff_label("Number of children"),
-
-    met_anticoncep = factor(met_anticoncep) |> # Changed
-      fct_recode(
-        "Not using" = "no uso",
-        "Oral contraceptives" = "aco",
-        "Injection" = "ampolla de 3 meses",
-        "Injection" = "ampolla mes",
-        "IUD" = "diu",
-        "Subdermal implant" = "implante_sd"
-      )  |>
-      fct_relevel(
-        "Not using",
-        "Oral contraceptives",
-        "Injection",
-        "IUD",
-        "Subdermal implant"
-      ) |>
-      ff_label("Contraceptive method"),
-    
-    antec_ets = factor(antec_ets) |> ###
-      fct_recode("Yes" = "si", "No" = "no") |>
-      fct_relevel("Yes", "No") |>
-      ff_label("History of STIs"),
-    
-    conocimiento = case_when(
-      conocimiento == "no conoce" |
-        conocimiento == "bajo" ~ "Low/No knowledge",
-      conocimiento == "medio" ~ "Medium" ,
-      TRUE ~ "High"
-    ) |>
-      fct_relevel("Low/No knowledge", "Medium", "High") |>
-      ff_label("Knowledge level"),
-    
-    conocimiento_dico = case_when(
-      conocimiento == "Low/No knowledge" |
-        conocimiento == "medio" ~ "Medium to No knowledge",
-      TRUE ~ "High"
-    ) |>
-      fct_relevel("Medium to No knowledge", "High") |>
-      ff_label("Knowledge level"),
-    
-    actitud = case_when(actitud == "negativa" ~ "Negative", TRUE ~ "Positive") |>
-      fct_relevel("Negative", "Positive") |>
-      ff_label("Attitude"),
-    
-    practica = case_when(practica == "incorrecta" ~ "Incorrect", TRUE ~ "Correct") |>
-      fct_relevel("Incorrect", "Correct") |>
-      ff_label("Practices")
-  )
-```
-
-## Selección de variables
-
-```{r}
-data_factors_1 = 
+data_factors_1 <-
   data_factors_0 |>
-  select(
+  dplyr::select(
     # Demographics
     edad,
     edad.c,
@@ -236,8 +83,8 @@ data_factors_1 =
     num_hijos.c,
     met_anticoncep,
     antec_ets,
-    #variables dependientes
-    conocimiento, 
+    # Need review
+    conocimiento,
     conocimiento_dico,
     actitud,
     practica
@@ -246,7 +93,51 @@ data_factors_1 =
 
 # Outputs
 
-## Table 1
+## Figure S1: Barplot of knowledge, attitudes, and practices
+
+```{r}
+# Data
+data_barplot <- data_factors_1 |>
+  dplyr::select(conocimiento, actitud, practica) |>
+  tidyr::pivot_longer(cols = everything(), names_to = "variable", values_to = "value") |>
+  dplyr::group_by(variable, value) |>
+  dplyr::summarise(n = n()) |>
+  dplyr::mutate(prop = n / sum(n)) |>
+  dplyr::mutate(percentage = round(prop * 100, 1))
+
+# Plot
+figure_s1 <- ggplot2::ggplot(data_barplot, aes(x = variable, y = percentage, fill = value)) +
+  ggplot2::geom_bar(stat = 'identity') +
+  ggplot2::geom_text(aes(label = paste0(percentage, "%")), position = position_stack(vjust = 0.5)) +
+  ggplot2::scale_x_discrete(labels = c("Knowledge", "Attitude", "Practices")) +
+  ggplot2::labs(y = "Percentage", x = element_blank(), fill = "Legend") +
+  ggpubr::theme_pubr() +
+  ggplot2::theme(legend.position = "right") +
+  ggplot2::scale_fill_brewer(palette = "RdYlBu")
+
+# View
+figure_s1
+```
+
+## Figure S2: Likert plot of attitudes
+
+```{r}
+ggstats::gglikert(attitudes, labels_accuracy = .1, labels_hide_below = .2)
+```
+
+## Figure S3: Likert plot of practices
+
+```{r}
+ggstats::gglikert(practices, labels_accuracy = .1, labels_hide_below = .2)
+```
+
+## Figure S4: Likert plot of knowledges
+
+```{r}
+ggstats::gglikert(knowledges, labels_accuracy = .1, labels_hide_below = .2)
+```
+
+## Table 1: Characteristics
 
 ```{r}
 table_1.1 <-
@@ -262,14 +153,12 @@ table_1.2 <-
 table_1 <-
   tbl_stack(
     list(table_1.1, table_1.2),
-    group_header = c(
-      "Demographics",
-      "Reproductive and sexual characteristics"
-    )
+    group_header = c("Demographics", "Reproductive and sexual characteristics")
   ) |>
-  modify_caption(
-    "**Table 1**. Characteristics of the surveyed women")
+  modify_caption("**Table 1**. Characteristics of the surveyed women")
 
+# View
+table_1
 ```
 
 ```{r}
@@ -634,3 +523,6 @@ table_7 <- as_flex_table(table_7)
 # Save tables
 save_as_docx(table_7, path = "Table_7.docx", align = "center")
 ```
+
+# Save outputs
+
