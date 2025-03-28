@@ -4,6 +4,9 @@ format:
   html:
     minimal: true
     code-copy: true
+execute:
+  warning: true
+  message: true
 ---
 
 # Load packages
@@ -24,11 +27,10 @@ pacman::p_load(
   ggpubr,
   ggsci,
   ggstats,
-  rfextras
+  bstfun,
+  MASS,
+  epiDisplay
 )
-
-# Run all scripts
-rfextras::load_scripts()
 ```
 
 # Import data
@@ -52,13 +54,19 @@ practices_data <- rio::import(here("data", "practices.csv"))
 ```{r}
 # Set a gtsummary theme
 gtsummary::theme_gtsummary_compact()
-gtsummary::theme_gtsummary_journal(journal = "nejm")
+gtsummary::theme_gtsummary_journal(journal = "jama")
 
 # Set a gtsummary language
 gtsummary::theme_gtsummary_language(language = "en")
 ```
 
 # Process data
+
+## Setting variables
+
+```{r}
+source(here::here("scripts", "dictionary.R"))
+```
 
 ## Variable selection
 
@@ -119,205 +127,269 @@ figure_s1 <- ggplot2::ggplot(data_barplot, aes(x = variable, y = percentage, fil
 figure_s1
 ```
 
-## Figure S2: Likert plot of attitudes
+## Figure S2: Likertplot of knowledges
 
 ```{r}
-ggstats::gglikert(attitudes, labels_accuracy = .1, labels_hide_below = .2)
+# Likertplot
+figure_s2 <-ggstats::gglikert(knowledges, labels_accuracy = .1, labels_hide_below = .2)
+
+# View
+figure_s2
 ```
 
-## Figure S3: Likert plot of practices
+## Figure S3: Likert plot of attitudes
 
 ```{r}
-ggstats::gglikert(practices, labels_accuracy = .1, labels_hide_below = .2)
+# Likertplot
+figure_s3 <- ggstats::gglikert(attitudes, labels_accuracy = .1, labels_hide_below = .2)
+
+# View
+figure_s3
 ```
 
-## Figure S4: Likert plot of knowledges
+## Figure S4: Likert plot of practices
 
 ```{r}
-ggstats::gglikert(knowledges, labels_accuracy = .1, labels_hide_below = .2)
+# Liker plot
+figure_s4 <- ggstats::gglikert(practices, labels_accuracy = .1, labels_hide_below = .2) +
+  scale_fill_manual(values = c("#d8b365", "#5ab4ac"))
+
+# View
+figure_s4
 ```
 
 ## Table 1: Characteristics
 
 ```{r}
+# Demographic characteristics
 table_1.1 <-
   data_factors_1 |>
   tbl_summary(include = c(edad:antec_fam)) |>
   modify_header(all_stat_cols() ~ "**{level}**, (n = {n})")
 
+# Reproductive and sexual characteristics
 table_1.2 <-
   data_factors_1 |>
   tbl_summary(include = c(edad_relacion_sexual.c:antec_ets)) |>
   modify_header(all_stat_cols() ~ "**{level}**, (n = {n})")
 
+# Stack tables
 table_1 <-
   tbl_stack(
     list(table_1.1, table_1.2),
-    group_header = c("Demographics", "Reproductive and sexual characteristics")
+    group_header = c("Demographics", "Reproductive and sexual")
   ) |>
-  modify_caption("**Table 1**. Characteristics of the surveyed women")
+  modify_caption("**Table 1**. Characteristics of women surveyed")
 
 # View
 table_1
 ```
 
+## Table S1. Characteristics by level of knowledge
+
 ```{r}
-table_1 <- as_flex_table(table_1)
-# Save tables
-save_as_docx(table_1, path = "Table_1.docx", align = "center")
+# Demographic characteristics
+table_S1.1 <-
+  data_factors_1 |>
+  tbl_summary(
+    include = c(edad:antec_fam), 
+    by = conocimiento,
+    statistic = list(
+      all_continuous() ~ "{median} ({p25}, {p75})", 
+      all_categorical() ~ "{n} ({p}%)"),
+    digits = list(
+      all_continuous() ~ c(1, 1), 
+      all_categorical() ~ c(0, 1))) |>
+  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>
+  add_q(method = "holm") |>
+  bold_p(t = 0.05) |>
+  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |>
+  modify_spanning_header(all_stat_cols() ~ "**Knowledge of cervical cancer**") |>
+  modify_footnote(all_stat_cols() ~ NA) |>
+  modify_header(q.value = "**Adjusted p-value**")
+
+# Reproductive and sexual characteristics
+table_S1.2 <-
+  data_factors_1 |>
+  tbl_summary(
+    include = c(edad_relacion_sexual.c:antec_ets), 
+    by = conocimiento,
+    statistic = list(
+      all_continuous() ~ "{median} ({p25}, {p75})", 
+      all_categorical() ~ "{n} ({p}%)"),
+    digits = list(
+      all_continuous() ~ c(1, 1), 
+      all_categorical() ~ c(0, 1))) |>
+  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>
+  add_q(method = "holm") |>
+  bold_p(t = 0.05) |>
+  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |>
+  modify_footnote(all_stat_cols() ~ NA) |>
+  modify_header(q.value = "**Adjusted p-value**")
+
+# Stack tables
+table_S1 <-
+  tbl_stack(
+    list(table_S1.1, table_S1.2),
+    group_header = c("Demographics", "Reproductive and sexual")
+  ) |>
+  modify_caption("**Table S1**. Characteristics of women surveyed by level of knowledge")
+
+# View
+table_S1 
 ```
 
-## Table 1s. with three categories of level of knowledge
+## Table S2. Characteristics by level of knowledge (two categories)
 
 ```{r}
-table_1.1.s <-
+# Demographic characteristics
+table_S2.1 <-
   data_factors_1 |>
-  tbl_summary(include = c(edad:antec_fam),
-              by = conocimiento) |>
-  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
+  tbl_summary(
+    include = c(edad:antec_fam),
+    by = conocimiento_dico,
+    statistic = list(
+      all_continuous() ~ "{median} ({p25}, {p75})", 
+      all_categorical() ~ "{n} ({p}%)"),
+    digits = list(
+      all_continuous() ~ c(1, 1), 
+      all_categorical() ~ c(0, 1))) |>
+  add_p() |>  
   bold_p(t=0.05) |> 
   modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |> 
-  modify_spanning_header(all_stat_cols(stat_0 = FALSE) ~ "**Level of knowledge**")
+  modify_spanning_header(all_stat_cols() ~ "**Knowledge of cervical cancer**") |>
+  modify_footnote(all_stat_cols() ~ NA)
 
-table_1.1.s <-
+# Reproductive and sexual characteristics
+table_S2.2 <-
   data_factors_1 |>
-  tbl_summary(include = c(edad_relacion_sexual.c:antec_ets),
-              by = conocimiento) |>
-  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
-  bold_p(t=0.05) |> 
-  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") 
+  tbl_summary(
+    include = c(edad_relacion_sexual.c:antec_ets),
+    by = conocimiento_dico,
+    statistic = list(
+      all_continuous() ~ "{median} ({p25}, {p75})", 
+      all_categorical() ~ "{n} ({p}%)"),
+    digits = list(
+      all_continuous() ~ c(1, 1), 
+      all_categorical() ~ c(0, 1))) |>
+  add_p() |>
+  bold_p(t = 0.05) |>
+  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |>
+  modify_footnote(all_stat_cols() ~ NA)
 
-table_1s <-
+# Stack tables
+table_S2 <-
   tbl_stack(
-    list(table_2.1, table_2.2),
-    group_header = c(
-      "Demographics",
-      "Reproductive and sexual characteristics"
-    )
+    list(table_S2.1, table_S2.2),
+    group_header = c("Demographics", "Reproductive and sexual")
   ) |>
   modify_caption(
-    "**Table 2**. Bivariate analysis of the characteristics of the surveyed women")
+    "**Table S2**. Characteristics of women surveyed by level of knowledge (two categories)")
 
+# View
+table_S2
 ```
 
-```{r}
-table_2 <- as_flex_table(table_2.1)
-# Save tables
-save_as_docx(table_2.1, path = "Table_2.1.docx", align = "center")
-```
-
-## Table 2. Level of knowledge with two categories
+## Table S3. Characteristics by level of attitudes
 
 ```{r}
-table_2.1 <-
+# Demographic characteristics
+table_S3.1 <-
   data_factors_1 |>
-  tbl_summary(include = c(edad:antec_fam),
-              by = conocimiento_dico) |>
-  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
+  tbl_summary(
+    include = c(edad:antec_fam),
+    by = actitud,
+    statistic = list(
+      all_continuous() ~ "{median} ({p25}, {p75})", 
+      all_categorical() ~ "{n} ({p}%)"),
+    digits = list(
+      all_continuous() ~ c(1, 1), 
+      all_categorical() ~ c(0, 1))) |>
+  add_p() |>  
   bold_p(t=0.05) |> 
   modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |> 
-  modify_spanning_header(all_stat_cols(stat_0 = FALSE) ~ "**Level of knowledge**")
+  modify_spanning_header(all_stat_cols() ~ "**Attitudes toward cervix cancer**") |>
+  modify_footnote(all_stat_cols() ~ NA)
 
-table_2.2 <-
+# Reproductive and sexual characteristics
+table_S3.2 <-
   data_factors_1 |>
-  tbl_summary(include = c(edad_relacion_sexual.c:antec_ets),
-              by = conocimiento_dico) |>
-  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
-  bold_p(t=0.05) |> 
-  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") 
+  tbl_summary(
+    include = c(edad_relacion_sexual.c:antec_ets),
+    by = actitud,
+    statistic = list(
+      all_continuous() ~ "{median} ({p25}, {p75})", 
+      all_categorical() ~ "{n} ({p}%)"),
+    digits = list(
+      all_continuous() ~ c(1, 1), 
+      all_categorical() ~ c(0, 1))) |>
+  add_p() |>
+  bold_p(t = 0.05) |>
+  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |>
+  modify_footnote(all_stat_cols() ~ NA)
 
-table_2 <-
+# Stack tables
+table_S3 <-
   tbl_stack(
-    list(table_2.1, table_2.2),
-    group_header = c(
-      "Demographics",
-      "Reproductive and sexual characteristics"
-    )
+    list(table_S3.1, table_S3.2),
+    group_header = c("Demographics", "Reproductive and sexual")
   ) |>
   modify_caption(
-    "Table 2. Sociodemographic and reproductive related characteristics by level of knowledge among women in Ica, Peru")
+    "Table S3. Characteristics of women surveyed by level of attitudes")
+
+# View
+table_S3
 ```
 
-```{r}
-table_2 <- as_flex_table(table_2)
-# Save tables
-save_as_docx(table_2, path = "Table_2.docx", align = "center")
-```
-
-## Table 3. Attitudes
+## Table S4. Characteristics by level of practices
 
 ```{r}
-table_3.1 <-
+# Demographic characteristics
+table_S4.1 <-
   data_factors_1 |>
-  tbl_summary(include = c(edad:antec_fam),
-              by = actitud) |>
-  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
-  bold_p(t = 0.05) |> 
-  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |> 
-  modify_spanning_header(all_stat_cols(stat_0 = FALSE) ~ "**Attitudes toward cervix cancer**")
-
-table_3.2 <-
-  data_factors_1 |>
-  tbl_summary(include = c(edad_relacion_sexual.c:antec_ets),
-              by = actitud) |>
-  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
-  bold_p(t = 0.05) |> 
-  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") 
-
-table_3 <-
-  tbl_stack(
-    list(table_3.1, table_3.2),
-    group_header = c(
-      "Demographics",
-      "Reproductive and sexual characteristics"
-    )
-  ) |>
-  modify_caption(
-    "Table 3. Sociodemographic and reproductive related characteristics by attitudes among women in Ica, Peru")
-```
-
-```{r}
-table_3 <- as_flex_table(table_3)
-# Save tables
-save_as_docx(table_3, path = "Table_3.docx", align = "center")
-```
-
-## Table 4. Practices
-
-```{r}
-table_4.1 <-
-  data_factors_1 |>
-  tbl_summary(include = c(edad:antec_fam),
-              by = practica) |>
-  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
+  tbl_summary(
+    include = c(edad:antec_fam),
+    by = practica,
+    statistic = list(
+      all_continuous() ~ "{median} ({p25}, {p75})", 
+      all_categorical() ~ "{n} ({p}%)"),
+    digits = list(
+      all_continuous() ~ c(1, 1), 
+      all_categorical() ~ c(0, 1))) |>
+  add_p() |>  
   bold_p(t=0.05) |> 
   modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |> 
-  modify_spanning_header(all_stat_cols(stat_0 = FALSE) ~ "**Practices regarding cervix cancer**")
+  modify_spanning_header(all_stat_cols() ~ "**Practices regarding cervix cancer**") |>
+  modify_footnote(all_stat_cols() ~ NA)
 
-table_4.2 <-
+# Reproductive and sexual characteristics
+table_S4.2 <-
   data_factors_1 |>
-  tbl_summary(include = c(edad_relacion_sexual.c:antec_ets),
-              by = practica) |>
-  add_p(test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |>  
+  tbl_summary(
+    include = c(edad_relacion_sexual.c:antec_ets),
+    by = practica,
+    statistic = list(
+      all_continuous() ~ "{median} ({p25}, {p75})", 
+      all_categorical() ~ "{n} ({p}%)"),
+    digits = list(
+      all_continuous() ~ c(1, 1), 
+      all_categorical() ~ c(0, 1))) |>
+  add_p() |>  
   bold_p(t=0.05) |> 
-  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") 
+  modify_header(all_stat_cols() ~ "**{level}**, (n = {n})") |>
+  modify_footnote(all_stat_cols() ~ NA)
 
-table_4 <-
+# stack tables
+table_S4 <-
   tbl_stack(
-    list(table_4.1, table_4.2),
-    group_header = c(
-      "Demographics",
-      "Reproductive and sexual characteristics"
-    )
+    list(table_S4.1, table_S4.2),
+    group_header = c("Demographics", "Reproductive and sexual")
   ) |>
   modify_caption(
-    "**Table 4**. Sociodemographic and reproductive related characteristics by practice among surveyed women in Ica, Peru")
-```
+    "**Table S4**. Characteristics of women surveyed by level of practices")
 
-```{r}
-table_4 <- as_flex_table(table_4)
-# Save tables
-save_as_docx(table_4, path = "Table_4.docx", align = "center")
+# View
+table_S4
 ```
 
 ## Logistic regression analysis
@@ -325,9 +397,9 @@ save_as_docx(table_4, path = "Table_4.docx", align = "center")
 ### Variables selection for univariate logistic regression
 
 ```{r}
-data_uv = 
+data_uv <- 
   data_factors_1 |> 
-  select(
+  dplyr::select(
     edad.c:antec_ets,
     conocimiento_dico,
     actitud,
@@ -335,46 +407,50 @@ data_uv =
   )
 ```
 
-### Table 5. Variables that contribute to high knowledge
+### Univariable regression analysis
 
 ```{r}
 tabla_5.1 <- data_uv |>
   tbl_uvregression(
-    include = c(edad.c,
-                etnia,
-                n_educacion,
-                e_marital,
-                ocupacion,
-                ocupacion_convi,
-                antec_fam,
-                edad_relacion_sexual.c,
-                parejas_sex.c,
-                num_hijos.c,
-                met_anticoncep
-                ),
+    include = c(
+      edad.c,
+      etnia,
+      n_educacion,
+      e_marital,
+      ocupacion,
+      ocupacion_convi,
+      antec_fam,
+      edad_relacion_sexual.c,
+      parejas_sex.c,
+      num_hijos.c,
+      met_anticoncep
+    ),
     y = conocimiento_dico,
     method = glm,
     method.args = list(family = binomial(link = "logit")),
     exponentiate = TRUE,
     conf.int = TRUE,
     hide_n = TRUE,
+    tidy_fun = broom.helpers::tidy_parameters,
     add_estimate_to_reference_rows = FALSE,
     pvalue_fun = ~ style_pvalue(.x, digits = 3),
     estimate_fun = ~ style_number(.x, digits = 2)
   ) |>
-  bold_labels() |>
-  bold_p(t = 0.05) |>
-  modify_header(estimate = "**OR**", p.value = "**P value**")
+  bold_p(t = 0.05)
+
 ```
+
+### Multivariable regression 
 
 ```{r}
 tabla_5.2 <- glm(
   conocimiento_dico ~
-    edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi + 
-    antec_fam + edad_relacion_sexual.c + parejas_sex.c + num_hijos.c + 
+    edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi +
+    antec_fam + edad_relacion_sexual.c + parejas_sex.c + num_hijos.c +
     met_anticoncep,
-  data = data_uv,
-  family = binomial(link = "logit") ) |>
+  family = binomial(link = "logit"),
+  data = data_uv
+) |>
   tbl_regression(
     exponentiate = TRUE,
     conf.int = TRUE,
@@ -382,18 +458,106 @@ tabla_5.2 <- glm(
     estimate_fun = ~ style_number(.x, digits = 2)
   ) |>
   bold_p(t = 0.05) |>
-  modify_header(estimate = "**OR**", 
-                p.value = "**P value**")
+  add_vif() |>
+  bstfun::add_inline_forest_plot()
+```
+
+
+```{r}
+mv_reg <- glm(
+  conocimiento_dico ~
+    edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi +
+    antec_fam + edad_relacion_sexual.c + parejas_sex.c + num_hijos.c +
+    met_anticoncep,
+  data = data_uv,
+  family = binomial(link = "logit")
+)
+
+# Summary with Wald and LRT p-values
+epiDisplay::logistic.display(mv_reg, simplified = FALSE, crude = FALSE)
+
+# Visual check of model assumptions
+performance::check_model(mv_reg)
+
+# Indices of model performance
+performance::model_performance(mv_reg)
+
+# Check for multicollinearity
+performance::check_collinearity(mv_reg, ci = NULL)
+```
+
+### Stepwise regression
+
+```{r}
+mv_reg |>
+  MASS::stepAIC(direction = "both", trace = FALSE)
+```
+
+### Multivariate reduced regression
+
+```{r}
+step_mv_reg <- glm(
+  conocimiento_dico ~ n_educacion + ocupacion_convi + 
+    antec_fam + edad_relacion_sexual.c + met_anticoncep,
+  family = binomial(link = "logit"),
+  data = data_uv
+)
+
+# Summary with Wald and LRT p-values
+epiDisplay::logistic.display(step_mv_reg, simplified = FALSE, crude = FALSE)
+
+# Visual check of model assumptions
+performance::check_model(step_mv_reg)
+
+# Indices of model performance
+performance::model_performance(step_mv_reg)
+
+# Check for multicollinearity
+performance::check_collinearity(step_mv_reg, ci = NULL)
+```
+
+```{r}
+tabla_5.2 <- glm(
+  conocimiento_dico ~ n_educacion + ocupacion_convi +
+    antec_fam + edad_relacion_sexual.c + met_anticoncep,
+  family = binomial(link = "logit"),
+  data = data_uv
+) |>
+  tbl_regression(
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
+  bold_p(t = 0.05) |>
+  add_vif() |>
+  bstfun::add_inline_forest_plot()
+```
+
+
+## Comparison of models
+
+
+```{r}
+# Compare performance of different models
+performance::compare_performance(mv_reg, step_mv_reg, verbose = TRUE)
+performance::compare_performance(mv_reg, step_mv_reg, verbose = FALSE)
+# Radar plot to compare models
+plot(performance::compare_performance(mv_reg, step_mv_reg, rank = TRUE, verbose = TRUE))
+
+# Likelihood Ratio Test (LRT for comparison)
+lmtest::lrtest(m2_non, m3_non)
 ```
 
 ### Merge tables
 
 ```{r}
-table_5 =
-  tbl_merge(tbls = 
-              list(tabla_5.1, tabla_5.2), 
-            tab_spanner = c("**Univariate analysis**",
-                            "**Multivariate analysis**"))
+table_5 <-
+  tbl_merge(
+    tbls =
+      list(tabla_5.1, tabla_5.2),
+    tab_spanner = c("**Univariate analysis**", "**Multivariate analysis**")
+  )
 ```
 
 ```{r}
@@ -526,3 +690,8 @@ save_as_docx(table_7, path = "Table_7.docx", align = "center")
 
 # Save outputs
 
+```{r}
+table_1 <- as_flex_table(table_1)
+# Save tables
+save_as_docx(table_1, path = "Table_1.docx", align = "center")
+```
