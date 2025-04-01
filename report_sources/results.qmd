@@ -392,7 +392,7 @@ table_S4 <-
 table_S4
 ```
 
-## Logistic regression analysis
+## Table S5:. Univariable logistic regression analysis
 
 ### Variables selection for univariate logistic regression
 
@@ -409,8 +409,10 @@ data_uv <-
 
 ### Univariable regression analysis
 
+#### Knowledges
+
 ```{r}
-tabla_5.1 <- data_uv |>
+table_S5.1 <- data_uv |>
   tbl_uvregression(
     include = c(
       edad.c,
@@ -437,87 +439,157 @@ tabla_5.1 <- data_uv |>
     estimate_fun = ~ style_number(.x, digits = 2)
   ) |>
   bold_p(t = 0.05)
-
 ```
 
-### Multivariable regression 
+#### Actitudes
 
 ```{r}
-tabla_5.2 <- glm(
+table_S5.2 <- data_uv |>
+    tbl_uvregression(
+    include = c(
+      edad.c,
+      etnia,
+      n_educacion,
+      e_marital,
+      ocupacion,
+      ocupacion_convi,
+      antec_fam,
+      edad_relacion_sexual.c,
+      parejas_sex.c,
+      num_hijos.c,
+      met_anticoncep
+    ),
+    y = actitud,
+    method = glm,
+    method.args = list(family = binomial(link = "logit")),
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    hide_n = TRUE,
+    tidy_fun = broom.helpers::tidy_parameters,
+    add_estimate_to_reference_rows = FALSE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
+  bold_p(t = 0.05)
+```
+
+#### Practices
+
+```{r}
+table_S5.3 <- data_uv |>
+    tbl_uvregression(
+    include = c(
+      edad.c,
+      etnia,
+      n_educacion,
+      e_marital,
+      ocupacion,
+      ocupacion_convi,
+      antec_fam,
+      edad_relacion_sexual.c,
+      parejas_sex.c,
+      num_hijos.c,
+      met_anticoncep
+    ),
+    y = practica,
+    method = glm,
+    method.args = list(family = binomial(link = "logit")),
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    hide_n = TRUE,
+    tidy_fun = broom.helpers::tidy_parameters,
+    add_estimate_to_reference_rows = FALSE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
+  bold_p(t = 0.05)
+```
+
+```{r}
+# Merge tables
+table_S5 <- tbl_merge(
+  tbls =
+    list(table_S5.1, table_S5.2, table_S5.3),
+  tab_spanner = c("**Knowleges**", "**Attitudes**", "**Practices**")
+)
+
+# View
+table_S5 
+```
+
+## Table 2. Knowledges multivariable regression analysis
+
+### Multivariate full regression 
+
+```{r}
+mv_reg_know <- glm(
   conocimiento_dico ~
     edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi +
     antec_fam + edad_relacion_sexual.c + parejas_sex.c + num_hijos.c +
     met_anticoncep,
   family = binomial(link = "logit"),
   data = data_uv
-) |>
-  tbl_regression(
-    exponentiate = TRUE,
-    conf.int = TRUE,
-    pvalue_fun = ~ style_pvalue(.x, digits = 3),
-    estimate_fun = ~ style_number(.x, digits = 2)
-  ) |>
-  bold_p(t = 0.05) |>
-  add_vif() |>
-  bstfun::add_inline_forest_plot()
-```
-
-
-```{r}
-mv_reg <- glm(
-  conocimiento_dico ~
-    edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi +
-    antec_fam + edad_relacion_sexual.c + parejas_sex.c + num_hijos.c +
-    met_anticoncep,
-  data = data_uv,
-  family = binomial(link = "logit")
 )
 
 # Summary with Wald and LRT p-values
-epiDisplay::logistic.display(mv_reg, simplified = FALSE, crude = FALSE)
+epiDisplay::logistic.display(mv_reg_know, simplified = FALSE, crude = FALSE)
 
 # Visual check of model assumptions
-performance::check_model(mv_reg)
+performance::check_model(mv_reg_know)
 
 # Indices of model performance
-performance::model_performance(mv_reg)
+performance::model_performance(mv_reg_know)
 
 # Check for multicollinearity
-performance::check_collinearity(mv_reg, ci = NULL)
+performance::check_collinearity(mv_reg_know, ci = NULL)
 ```
 
 ### Stepwise regression
 
 ```{r}
-mv_reg |>
+mv_reg_know |>
   MASS::stepAIC(direction = "both", trace = FALSE)
 ```
 
 ### Multivariate reduced regression
 
 ```{r}
-step_mv_reg <- glm(
-  conocimiento_dico ~ n_educacion + ocupacion_convi + 
-    antec_fam + edad_relacion_sexual.c + met_anticoncep,
+step_mv_reg_know <- glm(
+  conocimiento_dico ~ n_educacion + ocupacion_convi + antec_fam + 
+    edad_relacion_sexual.c + met_anticoncep,
   family = binomial(link = "logit"),
   data = data_uv
 )
 
 # Summary with Wald and LRT p-values
-epiDisplay::logistic.display(step_mv_reg, simplified = FALSE, crude = FALSE)
+epiDisplay::logistic.display(step_mv_reg_know, simplified = FALSE, crude = FALSE)
 
 # Visual check of model assumptions
-performance::check_model(step_mv_reg)
+performance::check_model(step_mv_reg_know)
 
 # Indices of model performance
-performance::model_performance(step_mv_reg)
+performance::model_performance(step_mv_reg_know)
 
 # Check for multicollinearity
-performance::check_collinearity(step_mv_reg, ci = NULL)
+performance::check_collinearity(step_mv_reg_know, ci = NULL)
 ```
 
+### Comparison of models
+
 ```{r}
-tabla_5.2 <- glm(
+# Compare performance of different models
+performance::compare_performance(mv_reg_know, step_mv_reg_know, verbose = TRUE)
+# Radar plot to compare models
+plot(performance::compare_performance(mv_reg_know, step_mv_reg_know, rank = TRUE, verbose = TRUE))
+
+# Likelihood Ratio Test (LRT for comparison)
+performance::test_likelihoodratio(step_mv_reg_know, mv_reg_know)
+```
+
+### Final table
+
+```{r}
+table_2  <- glm(
   conocimiento_dico ~ n_educacion + ocupacion_convi +
     antec_fam + edad_relacion_sexual.c + met_anticoncep,
   family = binomial(link = "logit"),
@@ -530,70 +602,99 @@ tabla_5.2 <- glm(
     estimate_fun = ~ style_number(.x, digits = 2)
   ) |>
   bold_p(t = 0.05) |>
-  add_vif() |>
   bstfun::add_inline_forest_plot()
+
+# View
+table_2
 ```
 
+## Table 3. Attitudes multivariable regression analysis
 
-## Comparison of models
+### Multivariate full regression 
 
+```{r}
+mv_reg_actt <- glm(
+  actitud ~
+    edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi +
+    antec_fam + edad_relacion_sexual.c + parejas_sex.c + num_hijos.c +
+    met_anticoncep,
+  family = binomial(link = "logit"),
+  data = data_uv,
+)
+
+# Summary with Wald and LRT p-values
+epiDisplay::logistic.display(mv_reg_actt, simplified = FALSE, crude = FALSE)
+
+# Visual check of model assumptions
+performance::check_model(mv_reg_actt)
+
+# Indices of model performance
+performance::model_performance(mv_reg_actt)
+
+# Check for multicollinearity
+performance::check_collinearity(mv_reg_actt, ci = NULL)
+```
+
+### Stepwise regression
+
+```{r}
+mv_reg_actt |>
+  MASS::stepAIC(direction = "both", trace = FALSE)
+```
+
+### Multivariate reduced regression
+
+```{r}
+step_mv_reg_actt <- glm(
+  actitud ~ n_educacion + ocupacion + edad_relacion_sexual.c + met_anticoncep,
+  family = binomial(link = "logit"),
+  data = data_uv
+)
+
+# Summary with Wald and LRT p-values
+epiDisplay::logistic.display(step_mv_reg_actt, simplified = FALSE, crude = FALSE)
+
+# Visual check of model assumptions
+performance::check_model(step_mv_reg_actt)
+
+# Indices of model performance
+performance::model_performance(step_mv_reg_actt)
+
+# Check for multicollinearity
+performance::check_collinearity(step_mv_reg_actt, ci = NULL)
+```
+
+### Comparison of models
 
 ```{r}
 # Compare performance of different models
-performance::compare_performance(mv_reg, step_mv_reg, verbose = TRUE)
-performance::compare_performance(mv_reg, step_mv_reg, verbose = FALSE)
+performance::compare_performance(mv_reg_actt, step_mv_reg_actt, verbose = TRUE)
 # Radar plot to compare models
-plot(performance::compare_performance(mv_reg, step_mv_reg, rank = TRUE, verbose = TRUE))
+plot(performance::compare_performance(mv_reg_actt, step_mv_reg_actt, rank = TRUE, verbose = TRUE))
 
 # Likelihood Ratio Test (LRT for comparison)
-lmtest::lrtest(m2_non, m3_non)
+performance::test_likelihoodratio(step_mv_reg_actt, mv_reg_actt)
 ```
 
-### Merge tables
+### Final table
 
 ```{r}
-table_5 <-
-  tbl_merge(
-    tbls =
-      list(tabla_5.1, tabla_5.2),
-    tab_spanner = c("**Univariate analysis**", "**Multivariate analysis**")
-  )
-```
-
-```{r}
-table_5 <- as_flex_table(table_5)
-# Save tables
-save_as_docx(table_5, path = "Table_5.docx", align = "center")
-```
-
-### Table 6. Variables that contribute to good attitudes
-
-```{r}
-tabla_6.1 <- data_uv |>
-  tbl_uvregression(
-    include = c(etnia,
-                n_educacion,
-                ocupacion,
-                ocupacion_convi,
-                antec_fam,
-                edad_relacion_sexual.c,
-                parejas_sex.c,
-                num_hijos.c,
-                met_anticoncep
-                ),
-    y = actitud,
-    method = glm,
-    method.args = list(family = binomial(link = "logit")),
+table_3  <- glm(
+  actitud ~ n_educacion + ocupacion + edad_relacion_sexual.c + met_anticoncep,
+  family = binomial(link = "logit"),
+  data = data_uv
+) |>
+  tbl_regression(
     exponentiate = TRUE,
     conf.int = TRUE,
-    hide_n = TRUE,
-    add_estimate_to_reference_rows = FALSE,
     pvalue_fun = ~ style_pvalue(.x, digits = 3),
     estimate_fun = ~ style_number(.x, digits = 2)
   ) |>
-  bold_labels() |>
   bold_p(t = 0.05) |>
-  modify_header(estimate = "**OR**", p.value = "**P value**")
+  bstfun::add_inline_forest_plot()
+
+# View
+table_3
 ```
 
 ```{r}
@@ -609,51 +710,14 @@ tabla_6.2 <- glm(
     estimate_fun = ~ style_number(.x, digits = 2)
   ) |>
   bold_p(t = 0.05) |>
+  add_vif() |>
   modify_header(estimate = "**OR**", 
-                p.value = "**P value**")
+                p.value = "**P value**") |>
+  bstfun::add_inline_forest_plot()
 ```
 
-### Merge tables
+## Table 4. Practices multivariable regression analysis
 
-```{r}
-table_6 =
-  tbl_merge(tbls = 
-              list(tabla_6.1, tabla_6.2), 
-            tab_spanner = c("**Univariate analysis**",
-                            "**Multivariate analysis**"))
-```
-
-```{r}
-table_6 <- as_flex_table(table_6)
-# Save tables
-save_as_docx(table_6, path = "Table_6.docx", align = "center")
-```
-
-### Table 7. Variables that contribute to good practices
-
-```{r}
-tabla_7.1 <- data_uv |>
-  tbl_uvregression(
-    include = c(edad.c,
-                e_marital,
-                ocupacion_convi,
-                edad_relacion_sexual.c,
-                num_hijos.c,
-                ),
-    y = practica,
-    method = glm,
-    method.args = list(family = binomial(link = "logit")),
-    exponentiate = TRUE,
-    conf.int = TRUE,
-    hide_n = TRUE,
-    add_estimate_to_reference_rows = FALSE,
-    pvalue_fun = ~ style_pvalue(.x, digits = 3),
-    estimate_fun = ~ style_number(.x, digits = 2)
-  ) |>
-  bold_labels() |>
-  bold_p(t = 0.05) |>
-  modify_header(estimate = "**OR**", p.value = "**P value**")
-```
 
 ```{r}
 tabla_7.2 <- glm(
@@ -672,21 +736,7 @@ tabla_7.2 <- glm(
                 p.value = "**P value**")
 ```
 
-### Merge tables
 
-```{r}
-table_7 =
-  tbl_merge(tbls = 
-              list(tabla_7.1, tabla_7.2), 
-            tab_spanner = c("**Univariate analysis**",
-                            "**Multivariate analysis**"))
-```
-
-```{r}
-table_7 <- as_flex_table(table_7)
-# Save tables
-save_as_docx(table_7, path = "Table_7.docx", align = "center")
-```
 
 # Save outputs
 
