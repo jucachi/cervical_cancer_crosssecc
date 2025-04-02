@@ -797,7 +797,8 @@ table_4 <- glm(
     pvalue_fun = ~ style_pvalue(.x, digits = 3),
     estimate_fun = ~ style_number(.x, digits = 2)
   ) |>
-  bold_p(t = 0.05)
+  bold_p(t = 0.05) |>
+  bstfun::add_inline_forest_plot()
 
 # View
 table_4
