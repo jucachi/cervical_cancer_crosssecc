@@ -1,5 +1,0 @@
-cargar paquetes
-```{r}
-library(dplyr)
-```
-
