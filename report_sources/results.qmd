@@ -613,7 +613,7 @@ table_2
 ### Multivariate full regression 
 
 ```{r}
-mv_reg_actt <- glm(
+mv_reg_atti <- glm(
   actitud ~
     edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi +
     antec_fam + edad_relacion_sexual.c + parejas_sex.c + num_hijos.c +
@@ -623,57 +623,57 @@ mv_reg_actt <- glm(
 )
 
 # Summary with Wald and LRT p-values
-epiDisplay::logistic.display(mv_reg_actt, simplified = FALSE, crude = FALSE)
+epiDisplay::logistic.display(mv_reg_atti, simplified = FALSE, crude = FALSE)
 
 # Visual check of model assumptions
-performance::check_model(mv_reg_actt)
+performance::check_model(mv_reg_atti)
 
 # Indices of model performance
-performance::model_performance(mv_reg_actt)
+performance::model_performance(mv_reg_atti)
 
 # Check for multicollinearity
-performance::check_collinearity(mv_reg_actt, ci = NULL)
+performance::check_collinearity(mv_reg_atti, ci = NULL)
 ```
 
 ### Stepwise regression
 
 ```{r}
-mv_reg_actt |>
+mv_reg_atti |>
   MASS::stepAIC(direction = "both", trace = FALSE)
 ```
 
 ### Multivariate reduced regression
 
 ```{r}
-step_mv_reg_actt <- glm(
+step_mv_reg_atti <- glm(
   actitud ~ n_educacion + ocupacion + edad_relacion_sexual.c + met_anticoncep,
   family = binomial(link = "logit"),
   data = data_uv
 )
 
 # Summary with Wald and LRT p-values
-epiDisplay::logistic.display(step_mv_reg_actt, simplified = FALSE, crude = FALSE)
+epiDisplay::logistic.display(step_mv_reg_atti, simplified = FALSE, crude = FALSE)
 
 # Visual check of model assumptions
-performance::check_model(step_mv_reg_actt)
+performance::check_model(step_mv_reg_atti)
 
 # Indices of model performance
-performance::model_performance(step_mv_reg_actt)
+performance::model_performance(step_mv_reg_atti)
 
 # Check for multicollinearity
-performance::check_collinearity(step_mv_reg_actt, ci = NULL)
+performance::check_collinearity(step_mv_reg_atti, ci = NULL)
 ```
 
 ### Comparison of models
 
 ```{r}
 # Compare performance of different models
-performance::compare_performance(mv_reg_actt, step_mv_reg_actt, verbose = TRUE)
+performance::compare_performance(mv_reg_atti, step_mv_reg_atti, verbose = TRUE)
 # Radar plot to compare models
-plot(performance::compare_performance(mv_reg_actt, step_mv_reg_actt, rank = TRUE, verbose = TRUE))
+plot(performance::compare_performance(mv_reg_atti, step_mv_reg_atti, rank = TRUE, verbose = TRUE))
 
 # Likelihood Ratio Test (LRT for comparison)
-performance::test_likelihoodratio(step_mv_reg_actt, mv_reg_actt)
+performance::test_likelihoodratio(step_mv_reg_atti, mv_reg_atti)
 ```
 
 ### Final table
@@ -718,30 +718,180 @@ tabla_6.2 <- glm(
 
 ## Table 4. Practices multivariable regression analysis
 
+### Multivariate full regression 
 
 ```{r}
-tabla_7.2 <- glm(
-  practica ~ edad.c + e_marital + ocupacion_convi + edad_relacion_sexual.c +
-    num_hijos.c,
+mv_reg_pract <- glm(
+  practica ~
+    edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi +
+    antec_fam + edad_relacion_sexual.c + parejas_sex.c + num_hijos.c +
+    met_anticoncep,
+  family = binomial(link = "logit"),
   data = data_uv,
-  family = binomial(link = "logit") ) |>
+)
+
+# Summary with Wald and LRT p-values
+epiDisplay::logistic.display(mv_reg_pract, simplified = FALSE, crude = FALSE)
+
+# Visual check of model assumptions
+performance::check_model(mv_reg_pract)
+
+# Indices of model performance
+performance::model_performance(mv_reg_pract)
+
+# Check for multicollinearity
+performance::check_collinearity(mv_reg_pract, ci = NULL)
+```
+
+### Stepwise regression
+
+```{r}
+mv_reg_pract |>
+  MASS::stepAIC(direction = "both", trace = FALSE)
+```
+
+### Multivariate reduced regression
+
+```{r}
+step_mv_reg_pract <- glm(
+  practica ~ etnia + n_educacion + ocupacion + edad_relacion_sexual.c + num_hijos.c,
+  family = binomial(link = "logit"),
+  data = data_uv
+)
+
+# Summary with Wald and LRT p-values
+epiDisplay::logistic.display(step_mv_reg_pract, simplified = FALSE, crude = FALSE)
+
+# Visual check of model assumptions
+performance::check_model(step_mv_reg_pract)
+
+# Indices of model performance
+performance::model_performance(step_mv_reg_pract)
+
+# Check for multicollinearity
+performance::check_collinearity(step_mv_reg_pract, ci = NULL)
+```
+
+### Comparison of models
+
+```{r}
+# Compare performance of different models
+performance::compare_performance(mv_reg_pract, step_mv_reg_pract, verbose = TRUE)
+# Radar plot to compare models
+plot(performance::compare_performance(mv_reg_pract, step_mv_reg_pract, rank = TRUE, verbose = TRUE))
+
+# Likelihood Ratio Test (LRT for comparison)
+performance::test_likelihoodratio(step_mv_reg_pract, mv_reg_pract)
+```
+### Final table
+
+```{r}
+table_4 <- glm(
+  practica ~ etnia + n_educacion + ocupacion + edad_relacion_sexual.c + num_hijos.c,
+  family = binomial(link = "logit"),
+  data = data_uv
+) |>
   tbl_regression(
     exponentiate = TRUE,
     conf.int = TRUE,
     pvalue_fun = ~ style_pvalue(.x, digits = 3),
     estimate_fun = ~ style_number(.x, digits = 2)
   ) |>
-  bold_p(t = 0.05) |>
-  modify_header(estimate = "**OR**", 
-                p.value = "**P value**")
+  bold_p(t = 0.05)
+
+# View
+table_4
 ```
-
-
 
 # Save outputs
 
+## Tables
+
 ```{r}
-table_1 <- as_flex_table(table_1)
 # Save tables
-save_as_docx(table_1, path = "Table_1.docx", align = "center")
+flex_table_1 <- gtsummary::as_flex_table(table_1)
+save_as_docx(
+  flex_table_1,
+  align = "center",
+  path = here("outputs", "Table_1.docx"))
+
+flex_table_S1 <- gtsummary::as_flex_table(table_S1)
+save_as_docx(
+  flex_table_S1,
+  align = "center",
+  path = here("outputs", "Table_S1.docx"))
+
+flex_table_S2 <- gtsummary::as_flex_table(table_S2)
+save_as_docx(
+  flex_table_S2,
+  align = "center",
+  path = here("outputs", "Table_S2.docx"))
+
+flex_table_S3 <- gtsummary::as_flex_table(table_S3)
+save_as_docx(
+  flex_table_S3,
+  align = "center",
+  path = here("outputs", "Table_S3.docx"))
+
+flex_table_S4 <- gtsummary::as_flex_table(table_S4)
+save_as_docx(
+  flex_table_S4,
+  align = "center",
+  path = here("outputs", "Table_S4.docx"))
+
+flex_table_S5 <- gtsummary::as_flex_table(table_S5)
+save_as_docx(
+  flex_table_S5,
+  align = "center",
+  path = here("outputs", "Table_S5.docx"))
+
+flex_table_2 <- gtsummary::as_flex_table(table_2)
+save_as_docx(
+  flex_table_2,
+  align = "center",
+  path = here("outputs", "Table_2.docx"))
+
+flex_table_3 <- gtsummary::as_flex_table(table_3)
+save_as_docx(
+  flex_table_3,
+  align = "center",
+  path = here("outputs", "Table_3.docx"))
+
+flex_table_4 <- gtsummary::as_flex_table(table_4)
+save_as_docx(
+  flex_table_4,
+  align = "center",
+  path = here("outputs", "Table_4.docx"))
 ```
+
+## Figures
+
+```{r}
+# Save figure S1 (JPEG)
+ggsave(
+  plot = figure_s2,
+  filename = here("outputs", "FIG_S1.jpeg"),
+  width = 9,
+  height = 6,
+  dpi = 500,
+  units = "in")
+
+# Save figure S2 (JPEG)
+ggsave(
+  plot = figure_s3,
+  filename = here("outputs", "FIG_S2.jpeg"),
+  width = 9,
+  height = 6,
+  dpi = 500,
+  units = "in")
+
+# Save figure S3 (JPEG)
+ggsave(
+  plot = figure_s4,
+  filename = here("outputs", "FIG_S3.jpeg"),
+  width = 9,
+  height = 3,
+  dpi = 500,
+  units = "in")
+```
+
