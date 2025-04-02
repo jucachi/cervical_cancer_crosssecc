@@ -13,4 +13,4 @@
 .Rproj.user
 
 # RStudio proyect
-*.Rproj
+.Rproj
