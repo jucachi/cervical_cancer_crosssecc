@@ -1,9 +1,24 @@
 ---
-title: "Statistical analysis"
-format:
+title: "KAP about cervical cancer"
+author: "Junior Carbajal, Kevin J. Paez & Carlos Ballon-Salcedo"
+date: "`r Sys.Date()`"
+format: 
   html:
-    minimal: true
-    code-copy: true
+    theme: 
+     light: simplex
+     dark: darkly
+    toc: true
+    toc-depth: 4
+    code-overflow: wrap
+    code-fold: true
+    highlight-style: github
+    code-tools: 
+      source: "https://github.com/jucachi/cervical_cancer_crosssecc"
+    include-in-header:
+      - file: zoom_in_out.js
+editor: source
+editor_options: 
+  chunk_output_type: inline
 execute:
   warning: true
   message: true
@@ -29,7 +44,8 @@ pacman::p_load(
   ggstats,
   bstfun,
   MASS,
-  epiDisplay
+  epiDisplay,
+  survey
 )
 ```
 
@@ -403,7 +419,8 @@ data_uv <-
     edad.c:antec_ets,
     conocimiento_dico,
     actitud,
-    practica
+    practica,
+    conocimiento
   )
 ```
 
@@ -519,7 +536,7 @@ table_S5
 
 ## Table 2. Knowledges multivariable regression analysis
 
-### Multivariate full regression 
+### Full multivariate regression
 
 ```{r fig.width = 9, fig.height = 9, fig.align='center'}
 mv_reg_know <- glm(
@@ -551,7 +568,7 @@ mv_reg_know |>
   MASS::stepAIC(direction = "both", trace = FALSE)
 ```
 
-### Multivariate reduced regression
+### Reduced multivariate regression 
 
 ```{r fig.width = 9, fig.height = 9, fig.align='center'}
 step_mv_reg_know <- glm(
@@ -590,8 +607,8 @@ performance::test_likelihoodratio(step_mv_reg_know, mv_reg_know)
 
 ```{r}
 table_2  <- glm(
-  conocimiento_dico ~ n_educacion + ocupacion_convi +
-    antec_fam + edad_relacion_sexual.c + met_anticoncep,
+  conocimiento_dico ~ 
+    n_educacion + ocupacion_convi + antec_fam + edad_relacion_sexual.c + met_anticoncep,
   family = binomial(link = "logit"),
   data = data_uv
 ) |>
@@ -610,7 +627,7 @@ table_2
 
 ## Table 3. Attitudes multivariable regression analysis
 
-### Multivariate full regression 
+### Full multivariate regression
 
 ```{r fig.width = 9, fig.height = 9, fig.align='center'}
 mv_reg_atti <- glm(
@@ -642,7 +659,7 @@ mv_reg_atti |>
   MASS::stepAIC(direction = "both", trace = FALSE)
 ```
 
-### Multivariate reduced regression
+### Reduced multivariate regression 
 
 ```{r fig.width = 9, fig.height = 9, fig.align='center'}
 step_mv_reg_atti <- glm(
@@ -718,7 +735,7 @@ tabla_6.2 <- glm(
 
 ## Table 4. Practices multivariable regression analysis
 
-### Multivariate full regression 
+### Full multivariate regression
 
 ```{r fig.width = 9, fig.height = 9, fig.align='center'}
 mv_reg_pract <- glm(
@@ -750,7 +767,7 @@ mv_reg_pract |>
   MASS::stepAIC(direction = "both", trace = FALSE)
 ```
 
-### Multivariate reduced regression
+### Reduced multivariate regression 
 
 ```{r fig.width = 9, fig.height = 9, fig.align='center'}
 step_mv_reg_pract <- glm(
@@ -804,6 +821,97 @@ table_4 <- glm(
 table_4
 ```
 
+## Table S6. Knowledges multivariable ordinal regression analysis
+
+### Univariate ordinal regression
+
+```{r}
+uv_reg_know_ord <- 
+  tbl_uvregression(
+    include = c(
+      edad.c,
+      etnia,
+      n_educacion,
+      e_marital,
+      ocupacion,
+      ocupacion_convi,
+      antec_fam,
+      edad_relacion_sexual.c,
+      parejas_sex.c,
+      num_hijos.c,
+      met_anticoncep
+    ),
+    y = conocimiento,
+    data = survey::svydesign(ids = ~ 1, data = data_uv, weights =  ~ 1),
+    method = svyolr,
+    method.args = list(method = "logistic"),
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    hide_n = TRUE,
+    tidy_fun = broom.helpers::tidy_parameters,
+    add_estimate_to_reference_rows = FALSE,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
+  bold_p(t = 0.05)
+```
+
+### Full multivariate ordinal regression
+
+```{r}
+mv_reg_know_ord <- survey::svyolr(
+  conocimiento ~
+    edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi +
+    antec_fam + edad_relacion_sexual.c + parejas_sex.c + num_hijos.c +
+    met_anticoncep,
+  method = "logistic",
+  design = survey::svydesign(ids = ~ 1, data = data_uv, weights =  ~ 1)) |>
+  tbl_regression(
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    tidy_fun = broom.helpers::tidy_parameters,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
+  bold_p(t = 0.05)
+```
+
+### Reduced multivariate ordinal regression
+
+```{r}
+step_mv_reg_know_ord <- survey::svyolr(
+  conocimiento ~
+    n_educacion + ocupacion_convi + antec_fam + edad_relacion_sexual.c + met_anticoncep,
+  method = "logistic",
+  design = survey::svydesign(ids = ~ 1, data = data_uv, weights =  ~ 1)) |>
+  tbl_regression(
+    exponentiate = TRUE,
+    conf.int = TRUE,
+    tidy_fun = broom.helpers::tidy_parameters,
+    pvalue_fun = ~ style_pvalue(.x, digits = 3),
+    estimate_fun = ~ style_number(.x, digits = 2)
+  ) |>
+  bold_p(t = 0.05)
+```
+
+### Final table
+
+```{r}
+# Merge tables
+table_S6 <-
+  gtsummary::tbl_merge(
+    tbls = list(uv_reg_know_ord, mv_reg_know_ord, step_mv_reg_know_ord),
+    tab_spanner = c(
+      "**Univariate**",
+      "**Multivariate**",
+      "**Multivariate (reduced)**"
+    )
+  )
+
+# View
+table_S6
+```
+
 # Save outputs
 
 ## Tables
@@ -816,6 +924,28 @@ save_as_docx(
   align = "center",
   path = here("outputs", "Table_1.docx"))
 
+flex_table_2 <- gtsummary::as_flex_table(table_2)
+save_as_docx(
+  flex_table_2,
+  align = "center",
+  path = here("outputs", "Table_2.docx"))
+
+flex_table_3 <- gtsummary::as_flex_table(table_3)
+save_as_docx(
+  flex_table_3,
+  align = "center",
+  path = here("outputs", "Table_3.docx"))
+
+flex_table_4 <- gtsummary::as_flex_table(table_4)
+save_as_docx(
+  flex_table_4,
+  align = "center",
+  path = here("outputs", "Table_4.docx"))
+```
+
+## Supplementary tables
+
+```{r}
 flex_table_S1 <- gtsummary::as_flex_table(table_S1)
 save_as_docx(
   flex_table_S1,
@@ -846,23 +976,11 @@ save_as_docx(
   align = "center",
   path = here("outputs", "Table_S5.docx"))
 
-flex_table_2 <- gtsummary::as_flex_table(table_2)
+flex_table_S6 <- gtsummary::as_flex_table(table_S6)
 save_as_docx(
-  flex_table_2,
+  flex_table_S6,
   align = "center",
-  path = here("outputs", "Table_2.docx"))
-
-flex_table_3 <- gtsummary::as_flex_table(table_3)
-save_as_docx(
-  flex_table_3,
-  align = "center",
-  path = here("outputs", "Table_3.docx"))
-
-flex_table_4 <- gtsummary::as_flex_table(table_4)
-save_as_docx(
-  flex_table_4,
-  align = "center",
-  path = here("outputs", "Table_4.docx"))
+  path = here("outputs", "Table_S6.docx"))
 ```
 
 ## Figures
