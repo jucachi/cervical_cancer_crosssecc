@@ -22,6 +22,7 @@ editor_options:
 execute:
   warning: true
   message: true
+  fig-align: center
 ---
 
 # Load packages
@@ -119,7 +120,7 @@ data_factors_1 <-
 
 ## Figure S1: Barplot of knowledge, attitudes, and practices
 
-```{r fig.align='center'}
+```{r}
 # Data
 data_barplot <- data_factors_1 |>
   dplyr::select(conocimiento, actitud, practica) |>
@@ -145,7 +146,7 @@ figure_s1
 
 ## Figure S2: Likertplot of knowledges
 
-```{r fig.align='center'}
+```{r}
 # Likertplot
 figure_s2 <-ggstats::gglikert(knowledges, labels_accuracy = .1, labels_hide_below = .2)
 
@@ -155,7 +156,7 @@ figure_s2
 
 ## Figure S3: Likert plot of attitudes
 
-```{r fig.align='center'}
+```{r}
 # Likertplot
 figure_s3 <- ggstats::gglikert(attitudes, labels_accuracy = .1, labels_hide_below = .2)
 
@@ -165,7 +166,7 @@ figure_s3
 
 ## Figure S4: Likert plot of practices
 
-```{r fig.align='center'}
+```{r}
 # Liker plot
 figure_s4 <- ggstats::gglikert(practices, labels_accuracy = .1, labels_hide_below = .2) +
   scale_fill_manual(values = c("#d8b365", "#5ab4ac"))
@@ -538,7 +539,7 @@ table_S5
 
 ### Full multivariate regression
 
-```{r fig.width = 9, fig.height = 9, fig.align='center'}
+```{r fig.width = 9, fig.height = 9}
 mv_reg_know <- glm(
   conocimiento_dico ~
     edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi +
@@ -570,7 +571,7 @@ mv_reg_know |>
 
 ### Reduced multivariate regression 
 
-```{r fig.width = 9, fig.height = 9, fig.align='center'}
+```{r fig.width = 9, fig.height = 9}
 step_mv_reg_know <- glm(
   conocimiento_dico ~ n_educacion + ocupacion_convi + antec_fam + 
     edad_relacion_sexual.c + met_anticoncep,
@@ -629,7 +630,7 @@ table_2
 
 ### Full multivariate regression
 
-```{r fig.width = 9, fig.height = 9, fig.align='center'}
+```{r fig.width = 9, fig.height = 9}
 mv_reg_atti <- glm(
   actitud ~
     edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi +
@@ -661,7 +662,7 @@ mv_reg_atti |>
 
 ### Reduced multivariate regression 
 
-```{r fig.width = 9, fig.height = 9, fig.align='center'}
+```{r fig.width = 9, fig.height = 9}
 step_mv_reg_atti <- glm(
   actitud ~ n_educacion + ocupacion + edad_relacion_sexual.c + met_anticoncep,
   family = binomial(link = "logit"),
@@ -737,7 +738,7 @@ tabla_6.2 <- glm(
 
 ### Full multivariate regression
 
-```{r fig.width = 9, fig.height = 9, fig.align='center'}
+```{r fig.width = 9, fig.height = 9}
 mv_reg_pract <- glm(
   practica ~
     edad.c + etnia + n_educacion + e_marital + ocupacion + ocupacion_convi +
@@ -769,7 +770,7 @@ mv_reg_pract |>
 
 ### Reduced multivariate regression 
 
-```{r fig.width = 9, fig.height = 9, fig.align='center'}
+```{r fig.width = 9, fig.height = 9}
 step_mv_reg_pract <- glm(
   practica ~ etnia + n_educacion + ocupacion + edad_relacion_sexual.c + num_hijos.c,
   family = binomial(link = "logit"),
